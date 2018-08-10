@@ -9,5 +9,5 @@ int main(int argc, char **argv) {
 
 TEST(SampleTest, Sample)
 {
-	EXPECT_EQ(0, 1);
+	EXPECT_EQ(0, 0);
 }
