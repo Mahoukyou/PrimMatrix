@@ -1,4 +1,4 @@
-//#include "src/matrix.h"
+#include "src/DMatrix.h"
 #include "gtest/gtest.h"
 
 
@@ -9,5 +9,11 @@ int main(int argc, char **argv) {
 
 TEST(SampleTest, Sample)
 {
-	EXPECT_EQ(0, 0);
+	using namespace PrimMatrix;
+	DMatrix<int> d(10, 5);
+
+	ASSERT_EQ(d.rows(), 10);
+	ASSERT_EQ(d.columns(), 5);
+
+	ASSERT_EQ(d(0, 0), 0);
 }
