@@ -1,6 +1,8 @@
 #include "src/DMatrix.h"
 #include "gtest/gtest.h"
 
+#include <iostream>
+
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
@@ -16,4 +18,6 @@ TEST(SampleTest, Sample)
 	ASSERT_EQ(d.columns(), 5);
 
 	ASSERT_EQ(d(0, 0), 0);
+
+	std::cout << d;
 }
