@@ -3,14 +3,30 @@
 #include <vector>
 #include <exception>
 #include <ostream>
+#include <assert.h>
 
 namespace PrimMatrix
 {
+	// FORWARD DECLARATION
+	class DMatrix_Exception;
+	class DMatrix_WrongRowCountException;
+	class DMatrix_WrongColumnCountException;
+	class DMatrix_ArrayIsEmpty;
+	class DMatrix_OutOfBounds;
+
+
 	template <class T>
 	class DMatrix
 	{
-
 	public:
+
+		using value_type = T;
+		using size_type = typename std::vector<T>::size_type;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+
 		enum class EOrientation 
 		{ 
 			Horizontal, 
@@ -19,7 +35,7 @@ namespace PrimMatrix
 
 	public:
 		/* CONSTRUCTION || DESTRUCTION */
-		explicit DMatrix(const int rowCount, const int columnCount) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount) :
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
@@ -28,7 +44,7 @@ namespace PrimMatrix
 			_data.resize(rowCount * columnCount);
 		}
 
-		explicit DMatrix(const int rowCount, const int columnCount, const T& init) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& init) :
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
@@ -37,36 +53,36 @@ namespace PrimMatrix
 			_data.resize(rowCount * columnCount, init);
 		}
 
-		explicit DMatrix(const int rowCount, const int columnCount, const std::vector<T>& arr) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, const std::vector<value_type>& arr) :
 			_rowCount{ rowCount },
-			_columncount{ columnCount }
+			_columnCount{ columnCount }
 		{
-			AssertMatrixSize(rowCount, columnCount);
+			AssertMatrixSize(_rowCount, _columnCount);
 			
 			if (arr.size() == 0)
 			{
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			const int matrixSize = rowCount * columnCount;
+			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = arr;
 		}
 
-		explicit DMatrix(const std::vector<T>& arr, const EOrientation orientation) :
-			_rowCount{ orientation == EOrientation::Horizontal ? arr.size() : 1 },
-			_columnCount{ orientation == EOrientation::Vertical ? arr.size() : 1 }
+		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
+			_rowCount{ orientation == EOrientation::Vertical ? arr.size() : 1 },
+			_columnCount{ orientation == EOrientation::Horizontal ? arr.size() : 1 }
 		{
 			if (arr.size() == 0)
 			{
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			const int matrixSize = rowCount * columnCount;
+			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = arr;
 
-			assert(_data.capacity() == (_columnCount *_rowCount), "_data capacity is different than max size");
+			assert(_data.capacity() == (_columnCount *_rowCount));
 		}
 
 		DMatrix(const DMatrix&) = default;
@@ -76,11 +92,15 @@ namespace PrimMatrix
 		DMatrix& operator=(DMatrix&&) noexcept = default;
 
 		/* ACCESSORS */
-		int rows() const noexcept { return _rowCount; }
-		int columns() const noexcept { return _columnCount; }
-		int size() const noexcept { return _data.size(); }
+		size_type rows() const noexcept { return _rowCount; }
+		size_type columns() const noexcept { return _columnCount; }
+		size_type size() const noexcept { return _data.size(); }
 
-		T& operator()(int row, int column)
+		pointer data() noexcept { return _data.data(); }
+		const_pointer data() const noexcept { return _data.data(); }
+
+		/* OPERATORS */
+		reference operator()(const size_type row, const size_type column)
 		{
 			if (row >= _rowCount ||
 				column >= _columnCount)
@@ -91,7 +111,7 @@ namespace PrimMatrix
 			return _data[rowColToIndex(row, column)];
 		}
 
-		const T& operator()(int row, int column) const
+		const_reference operator()(const size_type row, const size_type column) const
 		{
 			if (row >= _rowCount ||
 				column >= _columnCount)
@@ -101,10 +121,11 @@ namespace PrimMatrix
 
 			return _data[rowColToIndex(row, column)];
 		}
+
 
 
 	private:
-		void AssertMatrixSize(const int rowCount, const int columnCount)
+		void AssertMatrixSize(const size_type rowCount, const size_type columnCount) const
 		{
 			if (rowCount < 1)
 			{
@@ -128,13 +149,13 @@ namespace PrimMatrix
 			swap(lhs._data, rhs._data);
 		}
 
-		size_t rowColToIndex(int row, int column) const
+		size_type rowColToIndex(const size_type row, const size_type column) const
 		{
 			return row * _columnCount + column;
 		}
 
-		int _rowCount, _columnCount;
-		std::vector<T> _data;
+		size_type _rowCount, _columnCount;
+		std::vector<value_type> _data;
 
 	};
 
@@ -158,38 +179,38 @@ namespace PrimMatrix
 	}
 
 	/* DMatrix exceptions */
-	class DMatrix_Exception : public std::exception
+	class DMatrix_Exception : public std::runtime_error
 	{
 	public:
-		DMatrix_Exception(const char* msg) :
-			std::exception{msg} {}
+		explicit DMatrix_Exception(const char* msg) :
+			std::runtime_error{ msg } {}
 	};
-
+	
 	class DMatrix_WrongRowCountException : public DMatrix_Exception
 	{
 	public:
-		DMatrix_WrongRowCountException() :
-			DMatrix_Exception{"Row count needs to be equal or greater than 1"} {}
+		explicit DMatrix_WrongRowCountException() :
+			DMatrix_Exception{ "Row count needs to be equal or greater than 1" } {}
 	};
 
 	class DMatrix_WrongColumnCountException : public DMatrix_Exception
 	{
 	public:
-		DMatrix_WrongColumnCountException() :
+		explicit DMatrix_WrongColumnCountException() :
 			DMatrix_Exception{ "Column count needs to be equal or greater than 1" } {}
 	};
 
 	class DMatrix_ArrayIsEmpty : public DMatrix_Exception
 	{
 	public:
-		DMatrix_ArrayIsEmpty() :
-			DMatrix_Exception{"Passed array used to initialize the matrix is empty"} {}
+		explicit DMatrix_ArrayIsEmpty() :
+			DMatrix_Exception{ "Passed array used to initialize the matrix is empty" } {}
 	};
 
 	class DMatrix_OutOfBounds : public DMatrix_Exception
 	{
 	public:
-		DMatrix_OutOfBounds() :
+		explicit DMatrix_OutOfBounds() :
 			DMatrix_Exception{ "Index, row or column is out of bounds" } {}
 	};
 }
