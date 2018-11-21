@@ -145,7 +145,6 @@ namespace PrimMatrix
 
 			swap(lhs._rowCount, rhs._rowCount);
 			swap(lhs._columnCount, rhs._columnCount);
-			swap(lhs._size, rhs._size);
 			swap(lhs._data, rhs._data);
 		}
 
@@ -214,4 +213,3 @@ namespace PrimMatrix
 			DMatrix_Exception{ "Index, row or column is out of bounds" } {}
 	};
 }
-

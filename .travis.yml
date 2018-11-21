@@ -1,6 +1,6 @@
 language: cpp
 compiler: g++
-dist: trusty
+dist: trusty 
 
 addons:
   apt:
@@ -12,8 +12,9 @@ addons:
 script:
   - export CC=gcc-7
   - export CXX=g++-7
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make
+  - cmake . -DENABLE_COVERAGE=TRUE
+  - make VERBOSE=1
   - make test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
