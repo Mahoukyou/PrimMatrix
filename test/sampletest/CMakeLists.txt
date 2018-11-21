@@ -5,17 +5,17 @@
 
 file(GLOB SRCS *.cpp)
 
-add_executable(sampletest ${SRCS})
+add_executable(dynamic_matrix_test ${SRCS})
 
 target_link_libraries(
-	sampletest
+	dynamic_matrix_test
     prim_matrix
 	gtest
 	gmock_main
 )
 
-target_link_libraries(sampletest --coverage)
+target_link_libraries(dynamic_matrix_test --coverage)
 
 
-install(TARGETS sampletest DESTINATION bin)
-add_test(UnitTests sampletest)
+install(TARGETS dynamic_matrix_test DESTINATION bin)
+add_test(UnitTests dynamic_matrix_test)

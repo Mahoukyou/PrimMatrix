@@ -44,13 +44,13 @@ namespace PrimMatrix
 			_data.resize(rowCount * columnCount);
 		}
 
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& init) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue) :
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
 			AssertMatrixSize(rowCount, columnCount);
 
-			_data.resize(rowCount * columnCount, init);
+			_data.resize(rowCount * columnCount, initialValue);
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, const std::vector<value_type>& arr) :
