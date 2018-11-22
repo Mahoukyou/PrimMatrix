@@ -71,6 +71,28 @@ namespace PrimMatrix
 			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = arr;
+
+			assert(_data.capacity() == matrixSize);
+		}
+
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, std::initializer_list<value_type> il) : 
+			_rowCount{ rowCount },
+			_columnCount{ columnCount }
+		{
+			AssertMatrixSize(_rowCount, _columnCount);
+			
+			if (il.size() == 0)
+			{
+				throw DMatrix_ArrayIsEmpty{};
+			}
+
+			const size_type matrixSize = _rowCount * _columnCount;
+			_data.resize(matrixSize);
+			_data = il;
+
+
+			assert(_data.capacity() == matrixSize);
+
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
@@ -86,7 +108,7 @@ namespace PrimMatrix
 			_data.resize(matrixSize);
 			_data = arr;
 
-			assert(_data.capacity() == (_columnCount *_rowCount));
+			assert(_data.capacity() == matrixSize);
 		}
 
 		/* COPY / MOVE OPERATIONS */

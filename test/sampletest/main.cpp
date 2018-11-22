@@ -128,6 +128,52 @@ TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
 	ASSERT_THAT(matrix, ::testing::ElementsAreArray(vec));
 }
 
+TEST(DMatrix_ConstructorTest, T_005_RowColInitializerList)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::initializer_list<testType> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	DMatrix<testType> matrix(rows, columns, il);
+
+	ASSERT_EQ(il.size(), size);
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(il));
+}
+
+TEST(DMatrix_ConstructorTest, T_006_RowColInitializerList)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	const matrixSizeType rows = 3;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	DMatrix<testType> matrix(rows, columns, { 0,1,2,3,4,5 });
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	ASSERT_THAT(matrix, ::testing::ElementsAre(0,1,2,3,4,5));
+}
+
+
+
 TEST(TT, TT)
 {
 	using namespace PrimMatrix;
