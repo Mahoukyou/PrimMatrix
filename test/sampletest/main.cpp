@@ -6,7 +6,6 @@
 
 #define NDEBUG
 
-
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
@@ -130,3 +129,25 @@ TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
 
 }
 
+TEST(TT, TT)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::vector<testType> vec{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	DMatrix<testType> matrix(rows, columns, vec);
+
+	std::cout << matrix;
+	
+	DMatrix<testType> transposed = matrix.transpose();
+	std::cout << transposed;
+
+	//todo data
+}

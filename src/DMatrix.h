@@ -85,6 +85,7 @@ namespace PrimMatrix
 			assert(_data.capacity() == (_columnCount *_rowCount));
 		}
 
+		/* COPY / MOVE OPERATIONS */
 		DMatrix(const DMatrix&) = default;
 		DMatrix(DMatrix&&) noexcept = default;
 
@@ -99,30 +100,76 @@ namespace PrimMatrix
 		pointer data() noexcept { return _data.data(); }
 		const_pointer data() const noexcept { return _data.data(); }
 
-		/* OPERATORS */
-		reference operator()(const size_type row, const size_type column)
+		reference at(const size_type index)
 		{
-			if (row >= _rowCount ||
-				column >= _columnCount)
+			// maybe use [] and throw own excpetion, too keep it the same?
+			return _data.at(index);
+		}
+
+		const_reference at(const size_type index) const
+		{
+			return _data.at(index);
+		}
+
+		reference at(const size_type row, const size_type column)
+		{
+			if (row >= rows() ||
+				column >= columns())
 			{
 				throw DMatrix_OutOfBounds{};
 			}
 
+			return _data[rowColToIndex(row, column)];
+		}
+
+		const_reference at(const size_type row, const size_type column) const
+		{
+			if (row >= rows() ||
+				column >= columns())
+			{
+				throw DMatrix_OutOfBounds{};
+			}
+
+			return _data[rowColToIndex(row, column)];
+		}
+
+		/* OPERATORS */
+		reference operator[](const size_type index)
+		{
+			return _data[index];
+		}
+
+		const_reference operator[](const size_type index) const
+		{
+			return _data[index];
+		}
+
+		reference operator()(const size_type row, const size_type column)
+		{
 			return _data[rowColToIndex(row, column)];
 		}
 
 		const_reference operator()(const size_type row, const size_type column) const
 		{
-			if (row >= _rowCount ||
-				column >= _columnCount)
-			{
-				throw DMatrix_OutOfBounds{};
-			}
-
 			return _data[rowColToIndex(row, column)];
 		}
 
+		/* OPERATIONS */
+		DMatrix transpose() const
+		{
+			DMatrix resultMatrix{ _columnCount, _rowCount };
 
+			auto currentMatrixIterator = _data.begin();
+			for (size_type resultColumn = 0; resultColumn < resultMatrix.columns(); ++resultColumn)
+			{
+				for (size_type resultRow = 0; resultRow < resultMatrix.rows(); ++resultRow, ++currentMatrixIterator)
+				{
+					resultMatrix(resultRow, resultColumn) = *currentMatrixIterator;
+				}
+			}
+
+			return resultMatrix;
+		}
 
 	private:
 		void AssertMatrixSize(const size_type rowCount, const size_type columnCount) const
