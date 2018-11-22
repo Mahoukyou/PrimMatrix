@@ -1,5 +1,6 @@
 #include "src/DMatrix.h"
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 #include <iostream>
 #include <vector>
@@ -16,7 +17,7 @@ TEST(DMatrix_ConstructorTest, T_001_RowCol)
 	using namespace PrimMatrix;
 
 	using testType = int;
-	using matrixSizeType = DMatrix<testType>::size_type;
+	using matrixSizeType = typename DMatrix<testType>::size_type;
 
 	const matrixSizeType rows = 10;
 	const matrixSizeType columns = 5;
@@ -28,8 +29,8 @@ TEST(DMatrix_ConstructorTest, T_001_RowCol)
 	ASSERT_EQ(matrix.columns(), columns);
 	ASSERT_EQ(matrix.size(), size);
 
-	// todo
-	//std::vector<testType> data(50);
+	std::vector<testType> testElements(size, testType{});
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(testElements));
 	
 }
 
@@ -51,7 +52,8 @@ TEST(DMatrix_ConstructorTest, T_002_RowColInitialValue)
 	ASSERT_EQ(matrix.columns(), columns);
 	ASSERT_EQ(matrix.size(), size);
 
-	// todo data
+	std::vector<testType> testElements(size, initialValue);
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(testElements));
 }
 
 TEST(DMatrix_ConstructorTest, T_003_RowColVectorInitialized)
@@ -75,8 +77,7 @@ TEST(DMatrix_ConstructorTest, T_003_RowColVectorInitialized)
 	ASSERT_EQ(matrix.columns(), columns);
 	ASSERT_EQ(matrix.size(), size);
 
-	// todo data
-
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(vec));
 }
 
 TEST(DMatrix_ConstructorTest, T_004_VectorVerticalOrientation)
@@ -100,8 +101,7 @@ TEST(DMatrix_ConstructorTest, T_004_VectorVerticalOrientation)
 	ASSERT_EQ(matrix.columns(), columns);
 	ASSERT_EQ(matrix.size(), size);
 
-	// todo data
-
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(vec));
 }
 
 TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
@@ -125,8 +125,7 @@ TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
 	ASSERT_EQ(matrix.columns(), columns);
 	ASSERT_EQ(matrix.size(), size);
 
-	// todo data
-
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(vec));
 }
 
 TEST(TT, TT)
@@ -143,11 +142,8 @@ TEST(TT, TT)
 	const matrixSizeType size = rows * columns;
 
 	DMatrix<testType> matrix(rows, columns, vec);
-
-	std::cout << matrix;
-	
 	DMatrix<testType> transposed = matrix.transpose();
-	std::cout << transposed;
 
-	//todo data
+	ASSERT_THAT(matrix, ::testing::ElementsAreArray(vec));
+	ASSERT_THAT(transposed, ::testing::ElementsAre(1,3,5,7,9,2,4,6,8,10));
 }

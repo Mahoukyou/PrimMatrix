@@ -26,6 +26,10 @@ namespace PrimMatrix
 		using const_reference = const T&;
 		using pointer = T*;
 		using const_pointer = const T*;
+		
+		//tmp for now
+		using iterator = typename std::vector<T>::iterator;
+		using const_iterator = typename std::vector<T>::const_iterator;
 
 		enum class EOrientation 
 		{ 
@@ -132,6 +136,17 @@ namespace PrimMatrix
 
 			return _data[rowColToIndex(row, column)];
 		}
+
+		/* tmp ITERATORS -- vector ones for now */
+		iterator begin() { return _data.begin(); }
+		const_iterator begin() const { return _data.begin(); }
+		iterator end() { return _data.end(); }
+		const_iterator end() const { return _data.end(); }
+
+		const_iterator cbegin() const { return _data.cbegin(); }
+		const_iterator cend() const { return _data.cend(); }
+
+
 
 		/* OPERATORS */
 		reference operator[](const size_type index)
