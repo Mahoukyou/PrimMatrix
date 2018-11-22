@@ -172,6 +172,120 @@ TEST(DMatrix_ConstructorTest, T_006_RowColInitializerList)
 	ASSERT_THAT(matrix, ::testing::ElementsAre(0,1,2,3,4,5));
 }
 
+TEST(DMatrix_AtTest, T_001_IndexNonConst)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::initializer_list<testType> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	DMatrix<testType> matrix(rows, columns, il);
+
+	ASSERT_EQ(il.size(), size);
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	for (matrixSizeType i = 0; i < matrix.size(); ++i)
+	{
+		ASSERT_EQ(matrix.at(i), *(il.begin() + i));
+	}
+}
+
+TEST(DMatrix_AtTest, T_002_IndexConst)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::initializer_list<testType> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	const DMatrix<testType> matrix(rows, columns, il);
+
+	ASSERT_EQ(il.size(), size);
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	for (matrixSizeType i = 0; i < matrix.size(); ++i)
+	{
+		ASSERT_EQ(matrix.at(i), *(il.begin() + i));
+	}
+}
+
+
+TEST(DMatrix_AtTest, T_003_RowColNonConst)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::initializer_list<testType> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	DMatrix<testType> matrix(rows, columns, il);
+
+	ASSERT_EQ(il.size(), size);
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	for (matrixSizeType row = 0, index = 0; row < matrix.rows(); ++row)
+	{
+		for (matrixSizeType column = 0; column < matrix.columns(); ++column, ++index)
+		{
+			ASSERT_EQ(matrix.at(row, column), *(il.begin() + index));
+		}
+	}
+}
+
+TEST(DMatrix_AtTest, T_004_RowColConst)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+	using matrixSizeType = DMatrix<testType>::size_type;
+
+	std::initializer_list<testType> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+	const matrixSizeType rows = 5;
+	const matrixSizeType columns = 2;
+	const matrixSizeType size = rows * columns;
+
+	const DMatrix<testType> matrix(rows, columns, il);
+
+	ASSERT_EQ(il.size(), size);
+
+	ASSERT_EQ(matrix.rows(), rows);
+	ASSERT_EQ(matrix.columns(), columns);
+	ASSERT_EQ(matrix.size(), size);
+
+	for (matrixSizeType row = 0, index = 0; row < matrix.rows(); ++row)
+	{
+		for (matrixSizeType column = 0; column < matrix.columns(); ++column, ++index)
+		{
+			ASSERT_EQ(matrix.at(row, column), *(il.begin() + index));
+		}
+	}
+}
 
 
 TEST(TT, TT)
