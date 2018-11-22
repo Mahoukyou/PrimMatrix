@@ -168,8 +168,6 @@ namespace PrimMatrix
 		const_iterator cbegin() const { return _data.cbegin(); }
 		const_iterator cend() const { return _data.cend(); }
 
-
-
 		/* OPERATORS */
 		reference operator[](const size_type index)
 		{
@@ -259,6 +257,60 @@ namespace PrimMatrix
 		}
 
 		return os;
+	}
+
+	template <class T>
+	DMatrix<T> operator+(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
+	{
+		if (lhs.rows() != rhs.rows())
+		{
+			// todo
+			throw 0;
+		}
+
+		if (lhs.columns() != rhs.columns())
+		{
+			// todo
+			throw 0;
+		}
+
+		DMatrix<T> resultMatrix(lhs.rows(), lhs.columns());
+		
+		auto lhsIt = lhs.begin();
+		auto rhsIt = rhs.begin();
+		for (auto& resultEl : resultMatrix)
+		{
+			resultEl = *lhsIt++ + *rhsIt++;
+		}
+
+		return resultMatrix;
+	}
+
+	template <class T>
+	DMatrix<T> operator-(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
+	{
+		if (lhs.rows() != rhs.rows())
+		{
+			// todo
+			throw 0;
+		}
+
+		if (lhs.columns() != rhs.columns())
+		{
+			// todo
+			throw 0;
+		}
+
+		DMatrix<T> resultMatrix(lhs.rows(), lhs.columns());
+
+		auto lhsIt = lhs.begin();
+		auto rhsIt = rhs.begin();
+		for (auto& resultEl : resultMatrix)
+		{
+			resultEl = *lhsIt++ - *rhsIt++;
+		}
+
+		return resultMatrix;
 	}
 
 	/* DMatrix exceptions */

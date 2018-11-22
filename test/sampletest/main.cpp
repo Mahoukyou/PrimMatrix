@@ -287,6 +287,43 @@ TEST(DMatrix_AtTest, T_004_RowColConst)
 	}
 }
 
+TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+
+	DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
+	DMatrix<testType> m2{ 2,3,{6,5,1,3,2,1} };
+
+	DMatrix<testType> additionResult = m1 + m2;
+
+	ASSERT_EQ(additionResult.rows(), 2);
+	ASSERT_EQ(additionResult.columns(), 3);
+	ASSERT_EQ(additionResult.size(), 6);
+
+	ASSERT_THAT(additionResult, ::testing::ElementsAre(7,7,2,7,7,7));
+}
+
+TEST(DMatrix_OperatorTests, T_002_SubtractOperator)
+{
+	using namespace PrimMatrix;
+
+	using testType = int;
+
+	DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
+	DMatrix<testType> m2{ 2,3,{6,5,4,3,2,1} };
+
+	DMatrix<testType> subtractionResult = m1 - m2;
+
+	ASSERT_EQ(subtractionResult.rows(), 2);
+	ASSERT_EQ(subtractionResult.columns(), 3);
+	ASSERT_EQ(subtractionResult.size(), 6);
+
+	ASSERT_THAT(subtractionResult, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
+}
+
+
 
 TEST(TT, TT)
 {
