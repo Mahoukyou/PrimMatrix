@@ -9,10 +9,9 @@ namespace PrimMatrix
 {
 	// FORWARD DECLARATION
 	class DMatrix_Exception;
-	class DMatrix_WrongRowCountException;
-	class DMatrix_WrongColumnCountException;
 	class DMatrix_ArrayIsEmpty;
-	class DMatrix_OutOfBounds;
+	class DMatrix_IndexOutOfBounds;
+	class DMatrix_RowColOutOfBounds;
 
 
 	template <class T>
@@ -39,21 +38,10 @@ namespace PrimMatrix
 
 	public:
 		/* CONSTRUCTION || DESTRUCTION */
-		explicit DMatrix(const size_type rowCount, const size_type columnCount) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue = value_type{}) :
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
-			AssertMatrixSize(rowCount, columnCount);
-
-			_data.resize(rowCount * columnCount);
-		}
-
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue) :
-			_rowCount{ rowCount },
-			_columnCount{ columnCount }
-		{
-			AssertMatrixSize(rowCount, columnCount);
-
 			_data.resize(rowCount * columnCount, initialValue);
 		}
 
@@ -61,8 +49,6 @@ namespace PrimMatrix
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
-			AssertMatrixSize(_rowCount, _columnCount);
-			
 			if (arr.size() == 0)
 			{
 				throw DMatrix_ArrayIsEmpty{};
@@ -79,8 +65,6 @@ namespace PrimMatrix
 			_rowCount{ rowCount },
 			_columnCount{ columnCount }
 		{
-			AssertMatrixSize(_rowCount, _columnCount);
-			
 			if (il.size() == 0)
 			{
 				throw DMatrix_ArrayIsEmpty{};
@@ -128,13 +112,22 @@ namespace PrimMatrix
 
 		reference at(const size_type index)
 		{
-			// maybe use [] and throw own excpetion, too keep it the same?
-			return _data.at(index);
+			if (index >= size())
+			{
+				throw DMatrix_IndexOutOfBounds{ index, size() };
+			}
+
+			return _data[index];
 		}
 
 		const_reference at(const size_type index) const
 		{
-			return _data.at(index);
+			if (index >= size())
+			{
+				throw DMatrix_IndexOutOfBounds{ index, size() };
+			}
+
+			return _data[index];
 		}
 
 		reference at(const size_type row, const size_type column)
@@ -142,7 +135,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_OutOfBounds{};
+				throw DMatrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
 			return _data[rowColToIndex(row, column)];
@@ -153,7 +146,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_OutOfBounds{};
+				throw DMatrix_RowColOutOfBounds{row, column, rows(), columns()};
 			}
 
 			return _data[rowColToIndex(row, column)];
@@ -207,28 +200,15 @@ namespace PrimMatrix
 		}
 
 	private:
-		void AssertMatrixSize(const size_type rowCount, const size_type columnCount) const
-		{
-			if (rowCount < 1)
-			{
-				throw DMatrix_WrongRowCountException{};
-			}
+		//void swap(DMatrix& lhs, DMatrix& rhs) noexcept
+		//{
+		//	// Enable ADL
+		//	using std::swap;
 
-			if (columnCount < 1)
-			{
-				throw DMatrix_WrongColumnCountException{};
-			}
-		}
-
-		void swap(DMatrix& lhs, DMatrix& rhs) noexcept
-		{
-			// Enable ADL
-			using std::swap;
-
-			swap(lhs._rowCount, rhs._rowCount);
-			swap(lhs._columnCount, rhs._columnCount);
-			swap(lhs._data, rhs._data);
-		}
+		//	swap(lhs._rowCount, rhs._rowCount);
+		//	swap(lhs._columnCount, rhs._columnCount);
+		//	swap(lhs._data, rhs._data);
+		//}
 
 		size_type rowColToIndex(const size_type row, const size_type column) const
 		{
@@ -320,20 +300,6 @@ namespace PrimMatrix
 		explicit DMatrix_Exception(const char* msg) :
 			std::runtime_error{ msg } {}
 	};
-	
-	class DMatrix_WrongRowCountException : public DMatrix_Exception
-	{
-	public:
-		explicit DMatrix_WrongRowCountException() :
-			DMatrix_Exception{ "Row count needs to be equal or greater than 1" } {}
-	};
-
-	class DMatrix_WrongColumnCountException : public DMatrix_Exception
-	{
-	public:
-		explicit DMatrix_WrongColumnCountException() :
-			DMatrix_Exception{ "Column count needs to be equal or greater than 1" } {}
-	};
 
 	class DMatrix_ArrayIsEmpty : public DMatrix_Exception
 	{
@@ -342,10 +308,40 @@ namespace PrimMatrix
 			DMatrix_Exception{ "Passed array used to initialize the matrix is empty" } {}
 	};
 
-	class DMatrix_OutOfBounds : public DMatrix_Exception
+	class DMatrix_IndexOutOfBounds : public DMatrix_Exception
 	{
 	public:
-		explicit DMatrix_OutOfBounds() :
-			DMatrix_Exception{ "Index, row or column is out of bounds" } {}
+		explicit DMatrix_IndexOutOfBounds(const size_t index, const size_t matrixSize) :
+			DMatrix_Exception{ "Index is out of bounds" },
+			_index{ index },
+			_matrixSize{ matrixSize }
+		{}
+
+		size_t index() const { return _index; }
+		size_t matrixSize() const { return _matrixSize; }
+
+	private:
+		const size_t _index, _matrixSize;
+	};
+
+	class DMatrix_RowColOutOfBounds : public DMatrix_Exception
+	{
+	public:
+		explicit DMatrix_RowColOutOfBounds(const size_t rows, const size_t columns, const size_t matrixRows, const size_t matrixColumns) :
+			DMatrix_Exception{ "Row or column is out of bounds" },
+			_rows{ rows },
+			_columns{ columns },
+			_matrixRows{ matrixRows },
+			_matrixColumn{ matrixColumns }
+
+		{}
+
+		size_t rows() const { return _rows; }
+		size_t columns() const { return _columns; }
+		size_t matrixRows() const { return _matrixRows; }
+		size_t matrixColumns() const { return _matrixColumn; }
+
+	private:
+		const size_t _rows, _columns, _matrixRows, _matrixColumn;
 	};
 }
