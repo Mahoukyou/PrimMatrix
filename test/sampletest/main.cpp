@@ -435,7 +435,7 @@ TEST(DMatrix_OperatorTests, T_002_SubtractOperator)
 }
 
 
-TEST(DMatrix_OperatorTests, T_002_MultiplicationOperator)
+TEST(DMatrix_OperatorTests, T_003_MultiplicationOperator)
 {
 	using namespace PrimMatrix;
 
@@ -456,6 +456,22 @@ TEST(DMatrix_OperatorTests, T_002_MultiplicationOperator)
 
 		// todo exception
 
+	}
+}
+
+TEST(DMatrix_OperatorTests, T_004_ScalarMultiplicationOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+
+		TestData<test_type> testData(2, 3);
+		const DMatrix<test_type> matrix{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+
+		const DMatrix<test_type> scalarMulResult = matrix * 3;
+
+		EXPECT_THAT(scalarMulResult, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
 	}
 }
 

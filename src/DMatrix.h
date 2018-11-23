@@ -321,6 +321,22 @@ namespace PrimMatrix
 		return resultMatrix;
 	}
 
+	// Scalar multiplication
+	template <class T>
+	DMatrix<T> operator*(const DMatrix<T>& lhs, const T& rhs)
+	{
+		DMatrix<T> resultMatrix{ lhs.rows(), lhs.columns() };
+
+		auto resultIt = resultMatrix.begin();
+		for (const auto& lhsValue : lhs)
+		{
+			*resultIt = lhsValue * rhs;
+			++resultIt;
+		}
+
+		return resultMatrix;
+	}
+
 	/* DMatrix exceptions */
 	class DMatrix_Exception : public std::runtime_error
 	{
