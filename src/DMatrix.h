@@ -57,8 +57,6 @@ namespace PrimMatrix
 			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = arr;
-
-			assert(_data.capacity() == matrixSize);
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, std::initializer_list<value_type> il) : 
@@ -73,10 +71,6 @@ namespace PrimMatrix
 			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = il;
-
-
-			assert(_data.capacity() == matrixSize);
-
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
@@ -91,16 +85,33 @@ namespace PrimMatrix
 			const size_type matrixSize = _rowCount * _columnCount;
 			_data.resize(matrixSize);
 			_data = arr;
+		}
 
-			assert(_data.capacity() == matrixSize);
+		DMatrix(const DMatrix&) = default;
+		DMatrix(DMatrix&& rhs) noexcept :
+			_rowCount{ rhs._rowCount },
+			_columnCount{ rhs._columnCount },
+			_data{ std::move(rhs._data) }
+		{
+			rhs._rowCount = rhs._columnCount = 0;
 		}
 
 		/* COPY / MOVE OPERATIONS */
-		DMatrix(const DMatrix&) = default;
-		DMatrix(DMatrix&&) noexcept = default;
-
 		DMatrix& operator=(const DMatrix&) = default;
-		DMatrix& operator=(DMatrix&&) noexcept = default;
+		DMatrix& operator=(DMatrix&& rhs) noexcept
+		{
+			swap(*this, rhs);
+			return *this;
+		}
+			
+		friend void swap(DMatrix& lhs, DMatrix& rhs) noexcept
+		{
+			using std::swap;
+
+			swap(lhs._rowCount, rhs._rowCount);
+			swap(lhs._columnCount, rhs._columnCount);
+			swap(lhs._data, rhs._data);
+		}
 
 		/* ACCESSORS */
 		size_type rows() const noexcept { return _rowCount; }
@@ -200,16 +211,6 @@ namespace PrimMatrix
 		}
 
 	private:
-		//void swap(DMatrix& lhs, DMatrix& rhs) noexcept
-		//{
-		//	// Enable ADL
-		//	using std::swap;
-
-		//	swap(lhs._rowCount, rhs._rowCount);
-		//	swap(lhs._columnCount, rhs._columnCount);
-		//	swap(lhs._data, rhs._data);
-		//}
-
 		size_type rowColToIndex(const size_type row, const size_type column) const
 		{
 			return row * _columnCount + column;

@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 	return RUN_ALL_TESTS();
 }
 
-TEST(DMatrix_ConstructorTest, T_001_RowCol)
+TEST(DMatrix_ConstructionTest, T_001_RowCol)
 {
 	using namespace PrimMatrix;
 
@@ -64,7 +64,7 @@ TEST(DMatrix_ConstructorTest, T_001_RowCol)
 	}
 }
 
-TEST(DMatrix_ConstructorTest, T_002_RowColVectorInitialized)
+TEST(DMatrix_ConstructionTest, T_002_RowColVectorInitialized)
 {
 	using namespace PrimMatrix;
 
@@ -103,7 +103,7 @@ TEST(DMatrix_ConstructorTest, T_002_RowColVectorInitialized)
 	}
 }
 
-TEST(DMatrix_ConstructorTest, T_003_VectorVerticalOrientation)
+TEST(DMatrix_ConstructionTest, T_003_VectorVerticalOrientation)
 {
 	using namespace PrimMatrix;
 
@@ -140,7 +140,7 @@ TEST(DMatrix_ConstructorTest, T_003_VectorVerticalOrientation)
 	}
 }
 
-TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
+TEST(DMatrix_ConstructionTest, T_004_VectorHorizontalOrientation)
 {
 	using namespace PrimMatrix;
 
@@ -161,7 +161,7 @@ TEST(DMatrix_ConstructorTest, T_004_VectorHorizontalOrientation)
 	}
 }
 
-TEST(DMatrix_ConstructorTest, T_005_RowColInitializerList)
+TEST(DMatrix_ConstructionTest, T_005_RowColInitializerList)
 {
 	using namespace PrimMatrix;
 
@@ -211,6 +211,103 @@ TEST(DMatrix_ConstructorTest, T_005_RowColInitializerList)
 
 }
 
+TEST(DMatrix_ConstructionTest, T_006_CopyConstructor)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const TestData<test_type> testData{ 2, 5 };
+		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+		const DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+
+		const auto matrixCopy = matrix;
+
+		EXPECT_EQ(matrixCopy.rows(), testData.rows);
+		EXPECT_EQ(matrixCopy.columns(), testData.columns);
+		EXPECT_EQ(matrixCopy.size(), testData.size);
+
+		EXPECT_THAT(matrixCopy, ::testing::ElementsAreArray(matrix));
+	}
+}
+
+TEST(DMatrix_ConstructionTest, T_007_MoveConstructor)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const TestData<test_type> testData{ 2, 5 };
+		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+
+		const auto matrixMoved = std::move(matrix);
+
+		EXPECT_EQ(matrix.rows(), 0);
+		EXPECT_EQ(matrix.columns(), 0);
+		EXPECT_EQ(matrix.size(), 0);
+
+		EXPECT_EQ(matrixMoved.rows(), testData.rows);
+		EXPECT_EQ(matrixMoved.columns(), testData.columns);
+		EXPECT_EQ(matrixMoved.size(), testData.size);
+
+		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+	}
+}
+
+
+TEST(DMatrix_ConstructionTest, T_008_CopyAssignmentOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const TestData<test_type> testData{ 2, 5 };
+		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+		const DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+		DMatrix<test_type> matrixCopy{ 1,1 };
+
+		matrixCopy = matrix;
+
+		EXPECT_EQ(matrixCopy.rows(), matrix.rows());
+		EXPECT_EQ(matrixCopy.columns(), matrix.columns());
+		EXPECT_EQ(matrixCopy.size(), matrix.size());
+
+		EXPECT_THAT(matrixCopy, ::testing::ElementsAreArray(matrix));
+	}
+}
+
+TEST(DMatrix_ConstructionTest, T_009_MoveAssigmentOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const TestData<test_type> testData{ 2, 5 };
+		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
+
+		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+		DMatrix<test_type> matrixMoved{ 1,1, {5} };
+		
+		matrixMoved = std::move(matrix);
+
+		EXPECT_EQ(matrix.rows(), 1);
+		EXPECT_EQ(matrix.columns(), 1);
+		EXPECT_EQ(matrix.size(), 1);
+
+		EXPECT_THAT(matrix, ::testing::ElementsAreArray({ 5 }));
+
+		EXPECT_EQ(matrixMoved.rows(), testData.rows);
+		EXPECT_EQ(matrixMoved.columns(), testData.columns);
+		EXPECT_EQ(matrixMoved.size(), testData.size);
+
+		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+	}
+}
+
 TEST(DMatrix_AtTest, T_001_IndexNonConst)
 {
 	using namespace PrimMatrix;
@@ -220,7 +317,7 @@ TEST(DMatrix_AtTest, T_001_IndexNonConst)
 		const TestData<test_type> testData{ 5, 2 };
 
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
-		DMatrix<test_type> matrix(testData.rows, testData.columns, il);
+		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
 
 		for (TestData<test_type>::size_type i = 0; i < matrix.size(); ++i)
 		{
