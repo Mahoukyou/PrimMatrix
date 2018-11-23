@@ -434,6 +434,31 @@ TEST(DMatrix_OperatorTests, T_002_SubtractOperator)
 	}
 }
 
+
+TEST(DMatrix_OperatorTests, T_002_MultiplicationOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+
+		TestData<test_type> testData(2, 3);
+		const DMatrix<test_type> m1{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+		const DMatrix<test_type> m2{ testData.columns, testData.rows, {1,2,3,4,5,6} };
+
+		const DMatrix<test_type> multiplicationResult = m1 * m2;
+
+		EXPECT_EQ(multiplicationResult.rows(), testData.rows);
+		EXPECT_EQ(multiplicationResult.columns(), testData.rows);
+		EXPECT_EQ(multiplicationResult.size(), testData.rows * testData.rows);
+
+		EXPECT_THAT(multiplicationResult, ::testing::ElementsAre(22, 28, 49, 64));
+
+		// todo exception
+
+	}
+}
+
 TEST(TT, TT)
 {
 	using namespace PrimMatrix;

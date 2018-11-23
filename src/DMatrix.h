@@ -293,6 +293,34 @@ namespace PrimMatrix
 		return resultMatrix;
 	}
 
+	template <class T>
+	DMatrix<T> operator*(const DMatrix<T> lhs, const DMatrix<T> rhs)
+	{
+		using size_type = typename DMatrix<T>::size_type;
+
+		if (lhs.columns() != rhs.rows())
+		{
+			// todo
+			throw 0;
+		}
+
+		DMatrix<T> resultMatrix{ lhs.rows(), rhs.columns() };
+
+		const auto sumLen = lhs.columns();
+		for (size_type resultRow = 0; resultRow < resultMatrix.rows(); ++resultRow)
+		{
+			for (size_type resultColumn = 0; resultColumn < resultMatrix.columns(); ++resultColumn)
+			{
+				for (size_type sumIndex = 0; sumIndex < sumLen; ++sumIndex)
+				{
+					resultMatrix(resultRow, resultColumn) += lhs(resultRow, sumIndex) * rhs(sumIndex, resultColumn);
+				}
+			}
+		}
+
+		return resultMatrix;
+	}
+
 	/* DMatrix exceptions */
 	class DMatrix_Exception : public std::runtime_error
 	{
