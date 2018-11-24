@@ -296,6 +296,33 @@ namespace PrimMatrix
 	};
 
 	template <class T>
+	bool operator==(const DMatrix<T>& lhs, const DMatrix<T> rhs)
+	{
+		if (lhs.rows() != rhs.rows() ||
+			lhs.columns() != rhs.columns())
+		{
+			return false;
+		}
+
+		auto lhsIt = lhs.begin();
+		for (const auto& rhsEl : rhs)
+		{
+			if (*lhsIt++ != rhsEl)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	template<class T>
+	bool operator!=(const DMatrix<T>& lhs, const DMatrix<T> rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class T>
 	DMatrix<T> operator+(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
 	{
 		if (lhs.rows() != rhs.rows())

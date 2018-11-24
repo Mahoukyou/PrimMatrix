@@ -669,6 +669,34 @@ TEST(DMatrix_OperatorTests, T_007_ScalarMultiplicationEqualsOperator)
 	}
 }
 
+TEST(DMatrix_OperatorTests, T_008_EqualsAndNotEqualsOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+
+		const DMatrix<test_type> matrix{ 2, 3, {1,2,3,4,5,6} };
+		const DMatrix<test_type> matrixDiffData{ 2, 3, {1,5,4,3,2,1} };
+		const DMatrix<test_type> matrixDiffRows{ 1, 3, {1,2,3} };
+		const DMatrix<test_type> matrixDiffCols{ 2,2,{1,2,3,4} };
+		const auto copy{ matrix };
+			
+		EXPECT_TRUE(matrix == copy);
+		EXPECT_FALSE(matrix == matrixDiffData);
+		EXPECT_FALSE(matrix == matrixDiffRows);
+		EXPECT_FALSE(matrix == matrixDiffCols);
+		EXPECT_FALSE(matrixDiffRows == matrixDiffCols);
+
+		EXPECT_FALSE(matrix != copy);
+		EXPECT_TRUE(matrix != matrixDiffData);
+		EXPECT_TRUE(matrix != matrixDiffRows);
+		EXPECT_TRUE(matrix != matrixDiffCols);
+		EXPECT_TRUE(matrixDiffRows != matrixDiffCols);
+	}
+}
+
+
 TEST(TT, TT)
 {
 	using namespace PrimMatrix;
