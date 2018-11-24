@@ -193,6 +193,76 @@ namespace PrimMatrix
 			return _data[rowColToIndex(row, column)];
 		}
 
+		DMatrix& operator+=(const DMatrix& rhs)
+		{
+			if (rows() != rhs.rows())
+			{
+				// todo
+				throw 0;
+			}
+
+			if (columns() != rhs.columns())
+			{
+				// todo
+				throw 0;
+			}
+
+			auto rhsIt = rhs.begin();
+			for (auto& el : *this)
+			{
+				el += *rhsIt++;
+			}
+
+			return *this;
+		}
+
+		DMatrix& operator-=(const DMatrix& rhs)
+		{
+			if (rows() != rhs.rows())
+			{
+				// todo
+				throw 0;
+			}
+
+			if (columns() != rhs.columns())
+			{
+				// todo
+				throw 0;
+			}
+
+			auto rhsIt = rhs.begin();
+			for (auto& el : *this)
+			{
+				el -= *rhsIt++;
+			}
+
+			return *this;
+		}
+
+		DMatrix& operator*=(const DMatrix& rhs)
+		{
+			//if (columns() != rhs.rows())
+			//{
+			//	// todo
+			//	throw 0;
+			//}
+
+			// We need to allocate third matrice anyway, so we can do this, this way atm
+			*this = *this * rhs;
+
+			return *this;
+		}
+
+		DMatrix& operator*=(const T& rhs)
+		{
+			for (auto& el : *this)
+			{
+				el *= rhs;
+			}
+
+			return *this;
+		}
+
 		/* OPERATIONS */
 		DMatrix transpose() const
 		{
@@ -220,25 +290,6 @@ namespace PrimMatrix
 		std::vector<value_type> _data;
 
 	};
-
-	template <class T>
-	std::ostream& operator<<(std::ostream& os, const DMatrix<T>& matrix)
-	{
-		os << "Matrix size = " << matrix.size() << "\n";
-		os << "Row count = " << matrix.rows() << " | Column count = " << matrix.columns() << "\n";
-		
-		for (size_t row = 0; row < matrix.rows(); ++row)
-		{
-			for (size_t column = 0; column < matrix.columns(); ++column)
-			{
-				os << "[" << matrix(row, column) << "] ";
-			}
-
-			os << "\n";
-		}
-
-		return os;
-	}
 
 	template <class T>
 	DMatrix<T> operator+(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
@@ -295,7 +346,7 @@ namespace PrimMatrix
 	}
 
 	template <class T>
-	DMatrix<T> operator*(const DMatrix<T> lhs, const DMatrix<T> rhs)
+	DMatrix<T> operator*(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
 	{
 		using size_type = typename DMatrix<T>::size_type;
 

@@ -305,6 +305,13 @@ TEST(DMatrix_ConstructionTest, T_009_MoveAssigmentOperator)
 		EXPECT_EQ(matrixMoved.size(), testData.size);
 
 		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+
+		matrixMoved = std::move(matrixMoved);
+		EXPECT_EQ(matrixMoved.rows(), testData.rows);
+		EXPECT_EQ(matrixMoved.columns(), testData.columns);
+		EXPECT_EQ(matrixMoved.size(), testData.size);
+
+		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
 	}
 }
 
@@ -508,7 +515,29 @@ TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
 	}
 }
 
-TEST(DMatrix_OperatorTests, T_002_SubtractOperator)
+TEST(DMatrix_OperatorTests, T_002_AdditionEqualsOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using testType = int;
+
+		DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<testType> m2{ 2,3,{6,5,1,3,2,1} };
+
+		m1 += m2;
+
+		EXPECT_EQ(m1.rows(), 2);
+		EXPECT_EQ(m1.columns(), 3);
+		EXPECT_EQ(m1.size(), 6);
+
+		EXPECT_THAT(m1, ::testing::ElementsAre(7, 7, 2, 7, 7, 7));
+
+		// todo exception
+	}
+}
+
+TEST(DMatrix_OperatorTests, T_003_SubtractOperator)
 {
 	using namespace PrimMatrix;
 
@@ -531,8 +560,31 @@ TEST(DMatrix_OperatorTests, T_002_SubtractOperator)
 	}
 }
 
+TEST(DMatrix_OperatorTests, T_003_SubtractEqualsOperator)
+{
+	using namespace PrimMatrix;
 
-TEST(DMatrix_OperatorTests, T_003_MultiplicationOperator)
+	{
+		using testType = int;
+
+		DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<testType> m2{ 2,3,{6,5,4,3,2,1} };
+
+		m1 -= m2;
+
+		EXPECT_EQ(m1.rows(), 2);
+		EXPECT_EQ(m1.columns(), 3);
+		EXPECT_EQ(m1.size(), 6);
+
+		EXPECT_THAT(m1, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
+
+		// todo exception
+
+	}
+}
+
+
+TEST(DMatrix_OperatorTests, T_004_MultiplicationOperator)
 {
 	using namespace PrimMatrix;
 
@@ -556,7 +608,31 @@ TEST(DMatrix_OperatorTests, T_003_MultiplicationOperator)
 	}
 }
 
-TEST(DMatrix_OperatorTests, T_004_ScalarMultiplicationOperator)
+TEST(DMatrix_OperatorTests, T_005_MultiplicationEqualsOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+
+		TestData<test_type> testData(2, 3);
+		DMatrix<test_type> m1{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+		const DMatrix<test_type> m2{ testData.columns, testData.rows, {1,2,3,4,5,6} };
+
+		m1 *= m2;
+
+		EXPECT_EQ(m1.rows(), testData.rows);
+		EXPECT_EQ(m1.columns(), testData.rows);
+		EXPECT_EQ(m1.size(), testData.rows * testData.rows);
+
+		EXPECT_THAT(m1, ::testing::ElementsAre(22, 28, 49, 64));
+
+		// todo exception
+
+	}
+}
+
+TEST(DMatrix_OperatorTests, T_006_ScalarMultiplicationOperator)
 {
 	using namespace PrimMatrix;
 
@@ -569,6 +645,22 @@ TEST(DMatrix_OperatorTests, T_004_ScalarMultiplicationOperator)
 		const DMatrix<test_type> scalarMulResult = matrix * 3;
 
 		EXPECT_THAT(scalarMulResult, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
+	}
+}
+
+TEST(DMatrix_OperatorTests, T_007_ScalarMultiplicationEqualsOperator)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+
+		TestData<test_type> testData(2, 3);
+		DMatrix<test_type> matrix{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+
+		matrix *= 3;
+
+		EXPECT_THAT(matrix, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
 	}
 }
 
