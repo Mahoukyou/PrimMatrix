@@ -733,3 +733,33 @@ TEST(TT, TT)
 		EXPECT_THAT(transposed, ::testing::ElementsAre(1, 6, 2, 7, 3, 8, 4, 9, 5, 10));
 	}
 }
+
+TEST(DMatrix_Operations, T_002_CreateIdentityMatrix)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const DMatrix<test_type>::value_type size = 3;
+		const auto identityMatrix = DMatrix<test_type>::createIdentityMatrix(size);
+
+		EXPECT_EQ(identityMatrix.rows(), size);
+		EXPECT_EQ(identityMatrix.columns(), size);
+		EXPECT_EQ(identityMatrix.size(), size * size);
+
+		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
+	}
+
+
+	{
+		using test_type = int;
+		const DMatrix<test_type>::value_type size = 1;
+		const auto identityMatrix = DMatrix<test_type>::createIdentityMatrix(size);
+
+		EXPECT_EQ(identityMatrix.rows(), size);
+		EXPECT_EQ(identityMatrix.columns(), size);
+		EXPECT_EQ(identityMatrix.size(), size * size);
+
+		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1));
+	}
+}

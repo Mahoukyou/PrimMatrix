@@ -3,7 +3,6 @@
 #include <vector>
 #include <exception>
 #include <ostream>
-#include <assert.h>
 
 namespace PrimMatrix
 {
@@ -39,24 +38,24 @@ namespace PrimMatrix
 	public:
 		/* CONSTRUCTION || DESTRUCTION */
 		explicit DMatrix(const size_type rowCount, const size_type columnCount) :
-			_rowCount{ rowCount },
+			row_count_{ rowCount },
 			_columnCount{ columnCount },
-			_data(_rowCount * _columnCount)
+			_data(row_count_ * _columnCount)
 		{ 
 			
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue) :
-			_rowCount{ rowCount },
+			row_count_{ rowCount },
 			_columnCount{ columnCount }, 
-			_data(_rowCount * _columnCount, initialValue)
+			_data(row_count_ * _columnCount, initialValue)
 
 		{
 
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, const std::vector<value_type>& arr) :
-			_rowCount{ rowCount },
+			row_count_{ rowCount },
 			_columnCount{ columnCount }
 		{
 			if (arr.size() == 0)
@@ -68,7 +67,7 @@ namespace PrimMatrix
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, std::initializer_list<value_type> il) : 
-			_rowCount{ rowCount },
+			row_count_{ rowCount },
 			_columnCount{ columnCount }
 		{
 			if (il.size() == 0)
@@ -80,7 +79,7 @@ namespace PrimMatrix
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
-			_rowCount{ orientation == EOrientation::Vertical ? arr.size() : 1 },
+			row_count_{ orientation == EOrientation::Vertical ? arr.size() : 1 },
 			_columnCount{ orientation == EOrientation::Horizontal ? arr.size() : 1 }
 		{
 			if (arr.size() == 0)
@@ -91,13 +90,15 @@ namespace PrimMatrix
 			_data = arr;
 		}
 
+		virtual ~DMatrix() = default;
+
 		DMatrix(const DMatrix&) = default;
 		DMatrix(DMatrix&& rhs) noexcept :
-			_rowCount{ rhs._rowCount },
+			row_count_{ rhs.row_count_ },
 			_columnCount{ rhs._columnCount },
 			_data{ std::move(rhs._data) }
 		{
-			rhs._rowCount = rhs._columnCount = 0;
+			rhs.row_count_ = rhs._columnCount = 0;
 		}
 
 		/* COPY / MOVE OPERATIONS */
@@ -112,13 +113,13 @@ namespace PrimMatrix
 		{
 			using std::swap;
 
-			swap(lhs._rowCount, rhs._rowCount);
+			swap(lhs.row_count_, rhs.row_count_);
 			swap(lhs._columnCount, rhs._columnCount);
 			swap(lhs._data, rhs._data);
 		}
 
 		/* ACCESSORS */
-		size_type rows() const noexcept { return _rowCount; }
+		size_type rows() const noexcept { return row_count_; }
 		size_type columns() const noexcept { return _columnCount; }
 		size_type size() const noexcept { return _data.size(); }
 
@@ -270,7 +271,7 @@ namespace PrimMatrix
 		/* OPERATIONS */
 		DMatrix transpose() const
 		{
-			DMatrix resultMatrix{ _columnCount, _rowCount };
+			DMatrix resultMatrix{ _columnCount, row_count_ };
 
 			auto currentMatrixIterator = _data.begin();
 			for (size_type resultColumn = 0; resultColumn < resultMatrix.columns(); ++resultColumn)
@@ -284,13 +285,25 @@ namespace PrimMatrix
 			return resultMatrix;
 		}
 
+		static DMatrix createIdentityMatrix(const size_type size, const value_type& value = 1)
+		{
+			DMatrix identityMatrix{ size, size };
+			
+			for (size_type i = 0; i < size; ++i)
+			{
+				identityMatrix(i, i) = value;
+			}
+
+			return identityMatrix;
+		}
+
 	private:
 		size_type rowColToIndex(const size_type row, const size_type column) const
 		{
 			return row * _columnCount + column;
 		}
 
-		size_type _rowCount, _columnCount;
+		size_type row_count_, _columnCount;
 		std::vector<value_type> _data;
 
 	};
