@@ -643,8 +643,13 @@ TEST(DMatrix_OperatorTests, T_006_ScalarMultiplicationOperator)
 		const DMatrix<test_type> matrix{ testData.rows, testData.columns, {1,2,3,4,5,6} };
 
 		const DMatrix<test_type> scalarMulResult = matrix * 3;
+		const DMatrix<test_type> scalarMulResult2 = 3 * matrix;
+		const DMatrix<test_type> scalarMulResult3 = 3 * matrix * 3;
+
 
 		EXPECT_THAT(scalarMulResult, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
+		EXPECT_THAT(scalarMulResult2, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
+		EXPECT_THAT(scalarMulResult3, ::testing::ElementsAre(9, 18, 27, 36, 45, 54));
 	}
 }
 

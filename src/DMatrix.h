@@ -38,11 +38,21 @@ namespace PrimMatrix
 
 	public:
 		/* CONSTRUCTION || DESTRUCTION */
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue = value_type{}) :
+		explicit DMatrix(const size_type rowCount, const size_type columnCount) :
 			_rowCount{ rowCount },
-			_columnCount{ columnCount }
+			_columnCount{ columnCount },
+			_data(_rowCount * _columnCount)
+		{ 
+			
+		}
+
+		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue) :
+			_rowCount{ rowCount },
+			_columnCount{ columnCount }, 
+			_data(_rowCount * _columnCount, initialValue)
+
 		{
-			_data.resize(rowCount * columnCount, initialValue);
+
 		}
 
 		explicit DMatrix(const size_type rowCount, const size_type columnCount, const std::vector<value_type>& arr) :
@@ -54,8 +64,6 @@ namespace PrimMatrix
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			const size_type matrixSize = _rowCount * _columnCount;
-			_data.resize(matrixSize);
 			_data = arr;
 		}
 
@@ -68,9 +76,7 @@ namespace PrimMatrix
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			const size_type matrixSize = _rowCount * _columnCount;
-			_data.resize(matrixSize);
-			_data = il;
+			_data = std::move(il);
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
@@ -82,8 +88,6 @@ namespace PrimMatrix
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			const size_type matrixSize = _rowCount * _columnCount;
-			_data.resize(matrixSize);
 			_data = arr;
 		}
 
@@ -382,11 +386,16 @@ namespace PrimMatrix
 		auto resultIt = resultMatrix.begin();
 		for (const auto& lhsValue : lhs)
 		{
-			*resultIt = lhsValue * rhs;
-			++resultIt;
+			*resultIt++ = lhsValue * rhs;
 		}
 
 		return resultMatrix;
+	}
+
+	template <class T>
+	DMatrix<T> operator*(const T& lhs, const DMatrix<T>& rhs)
+	{
+		return rhs * lhs;
 	}
 
 	/* DMatrix exceptions */
