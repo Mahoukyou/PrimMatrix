@@ -84,7 +84,7 @@ TEST(DMatrix_ConstructionTest, T_002_RowColVectorInitialized)
 	{
 		using test_type = int;
 		const test_data<test_type> test_data{ 2, 5 };
-		const std::vector<test_type> vec{ };
+		const std::vector<test_type> vec{ 1,2,3 };
 
 		try
 		{
@@ -93,9 +93,10 @@ TEST(DMatrix_ConstructionTest, T_002_RowColVectorInitialized)
 			// should throw
 			EXPECT_TRUE(false);
 		}
-		catch(const DMatrix_ArrayIsEmpty&)
+		catch(const DMatrix_InvalidInitializerSize& e)
 		{
-			// ... nothing to test in here, except that we got it
+			EXPECT_EQ(e.initializer_size(), vec.size());
+			EXPECT_EQ(e.matrix_size(), test_data.size);
 		}
 	}
 }
@@ -120,20 +121,20 @@ TEST(DMatrix_ConstructionTest, T_003_VectorVerticalOrientation)
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(vec));
 	}
 
-	{
-		using test_type = int;
-		const std::vector<test_type> vec{ };
+	//{
+	//	using test_type = int;
+	//	const std::vector<test_type> vec{ };
 
-		try
-		{
-			const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::vertical);
+	//	try
+	//	{
+	//		const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::vertical);
 
-			EXPECT_TRUE(false);
-		}
-		catch (const DMatrix_ArrayIsEmpty&)
-		{
-		}
-	}
+	//		EXPECT_TRUE(false);
+	//	}
+	//	catch (const DMatrix_ArrayIsEmpty&)
+	//	{
+	//	}
+	//}
 }
 
 TEST(DMatrix_ConstructionTest, T_004_VectorHorizontalOrientation)
@@ -196,12 +197,15 @@ TEST(DMatrix_ConstructionTest, T_005_RowColInitializerList)
 
 		try
 		{
-			const DMatrix<test_type> matrix(test_data.rows, test_data.columns, {});
+			const DMatrix<test_type> matrix(test_data.rows, test_data.columns, {4,5,6,2});
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_ArrayIsEmpty&)
+		catch (const DMatrix_InvalidInitializerSize& e)
 		{
+			const DMatrix<test_type>::size_type il_size = 4;
+			EXPECT_EQ(e.initializer_size(), il_size);
+			EXPECT_EQ(e.matrix_size(), test_data.size);
 		}
 	}
 
@@ -732,32 +736,32 @@ TEST(DMatrix_Operations, T_001_Transpose)
 	}
 }
 
-TEST(DMatrix_Operations, T_002_Createidentity_matrix)
+TEST(DMatrix_Operations, T_002_CreateIdentityMatrix)
 {
 	using namespace PrimMatrix;
 
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 3;
-		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
+		const auto identityMatrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identity_matrix.rows(), size);
-		EXPECT_EQ(identity_matrix.columns(), size);
-		EXPECT_EQ(identity_matrix.size(), size * size);
+		EXPECT_EQ(identityMatrix.rows(), size);
+		EXPECT_EQ(identityMatrix.columns(), size);
+		EXPECT_EQ(identityMatrix.size(), size * size);
 
-		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
+		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
 	}
 
 
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 1;
-		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
+		const auto identityMatrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identity_matrix.rows(), size);
-		EXPECT_EQ(identity_matrix.columns(), size);
-		EXPECT_EQ(identity_matrix.size(), size * size);
+		EXPECT_EQ(identityMatrix.rows(), size);
+		EXPECT_EQ(identityMatrix.columns(), size);
+		EXPECT_EQ(identityMatrix.size(), size * size);
 
-		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1));
+		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1));
 	}
 }

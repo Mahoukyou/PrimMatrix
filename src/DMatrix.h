@@ -1,16 +1,26 @@
 #pragma once
 
 #include <vector>
-#include <exception>
-#include <ostream>
+
+#include "DMatrix_exception.h"
 
 namespace PrimMatrix
 {
+	namespace
+	{
+		bool will_overflow(const size_t a, const size_t b)
+		{
+			// todo
+			return true;
+		}
+	}
+
 	// FORWARD DECLARATION
 	class DMatrix_Exception;
-	class DMatrix_ArrayIsEmpty;
+	class DMatrix_InvalidInitializerSize;
 	class DMatrix_IndexOutOfBounds;
 	class DMatrix_RowColOutOfBounds;
+	class DMatrix_OperationMatrixMismatch;
 
 
 	template <class T>
@@ -35,7 +45,6 @@ namespace PrimMatrix
 			vertical 
 		};
 
-	public:
 		/* CONSTRUCTION || DESTRUCTION */
 		explicit DMatrix(const size_type row_count, const size_type column_count) :
 			row_count_{ row_count },
@@ -49,7 +58,6 @@ namespace PrimMatrix
 			row_count_{ row_count },
 			column_count_{ column_count }, 
 			data_(row_count_ * column_count_, initial_value)
-
 		{
 
 		}
@@ -58,9 +66,10 @@ namespace PrimMatrix
 			row_count_{ row_count },
 			column_count_{ column_count }
 		{
-			if (arr.empty())
+			const size_type size = rows() * columns();
+			if(arr.size() != size)
 			{
-				throw DMatrix_ArrayIsEmpty{};
+				throw DMatrix_InvalidInitializerSize{ arr.size(), size };
 			}
 
 			data_ = arr;
@@ -70,9 +79,10 @@ namespace PrimMatrix
 			row_count_{ row_count },
 			column_count_{ column_count }
 		{
-			if (il.size() == 0)
+			const size_type size = rows() * columns();
+			if (il.size() != size)
 			{
-				throw DMatrix_ArrayIsEmpty{};
+				throw DMatrix_InvalidInitializerSize{ il.size(), size };
 			}
 
 			data_ = std::move(il);
@@ -80,14 +90,9 @@ namespace PrimMatrix
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
 			row_count_{ orientation == EOrientation::vertical ? arr.size() : 1 },
-			column_count_{ orientation == EOrientation::horizontal ? arr.size() : 1 }
+			column_count_{ orientation == EOrientation::horizontal ? arr.size() : 1 },
+			data_{ arr }
 		{
-			if (arr.empty())
-			{
-				throw DMatrix_ArrayIsEmpty{};
-			}
-
-			data_ = arr;
 		}
 
 		virtual ~DMatrix() = default;
@@ -246,13 +251,6 @@ namespace PrimMatrix
 
 		DMatrix& operator*=(const DMatrix& rhs)
 		{
-			//if (columns() != rhs.rows())
-			//{
-			//	// todo
-			//	throw 0;
-			//}
-
-			// We need to allocate third matrice anyway, so we can do this, this way atm
 			*this = *this * rhs;
 
 			return *this;
@@ -338,16 +336,15 @@ namespace PrimMatrix
 	template <class T>
 	DMatrix<T> operator+(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
 	{
-		if (lhs.rows() != rhs.rows())
+		if (lhs.rows() != rhs.rows() ||
+			lhs.columns() != rhs.columns())
 		{
-			// todo
-			throw 0;
-		}
-
-		if (lhs.columns() != rhs.columns())
-		{
-			// todo
-			throw 0;
+			throw DMatrix_OperationMatrixMismatch{
+				DMatrix_OperationMatrixMismatch::EOperation::addition,
+				lhs.rows(),
+				lhs.columns(),
+				rhs.rows(),
+				rhs.columns() };
 		}
 
 		DMatrix<T> result_matrix(lhs.rows(), lhs.columns());
@@ -365,16 +362,15 @@ namespace PrimMatrix
 	template <class T>
 	DMatrix<T> operator-(const DMatrix<T>& lhs, const DMatrix<T>& rhs)
 	{
-		if (lhs.rows() != rhs.rows())
+		if (lhs.rows() != rhs.rows() ||
+			lhs.columns() != rhs.columns())
 		{
-			// todo
-			throw 0;
-		}
-
-		if (lhs.columns() != rhs.columns())
-		{
-			// todo
-			throw 0;
+			throw DMatrix_OperationMatrixMismatch{
+				DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+				lhs.rows(),
+				lhs.columns(),
+				rhs.rows(),
+				rhs.columns() };
 		}
 
 		DMatrix<T> result_matrix(lhs.rows(), lhs.columns());
@@ -396,8 +392,12 @@ namespace PrimMatrix
 
 		if (lhs.columns() != rhs.rows())
 		{
-			// todo
-			throw 0;
+			throw DMatrix_OperationMatrixMismatch { 
+				DMatrix_OperationMatrixMismatch::EOperation::multiplication, 
+				lhs.rows(), 
+				lhs.columns(), 
+				rhs.rows(), 
+				rhs.columns() };
 		}
 
 		DMatrix<T> result_matrix{ lhs.rows(), rhs.columns() };
@@ -436,57 +436,5 @@ namespace PrimMatrix
 	DMatrix<T> operator*(const T& lhs, const DMatrix<T>& rhs)
 	{
 		return rhs * lhs;
-	}
-
-	/* DMatrix exceptions */
-	class DMatrix_Exception : public std::runtime_error
-	{
-	public:
-		explicit DMatrix_Exception(const char* msg) :
-			std::runtime_error{ msg } {}
-	};
-
-	class DMatrix_ArrayIsEmpty : public DMatrix_Exception
-	{
-	public:
-		explicit DMatrix_ArrayIsEmpty() :
-			DMatrix_Exception{ "Passed array used to initialize the matrix is empty" } {}
-	};
-
-	class DMatrix_IndexOutOfBounds : public DMatrix_Exception
-	{
-	public:
-		explicit DMatrix_IndexOutOfBounds(const size_t index, const size_t matrixSize) :
-			DMatrix_Exception{ "Index is out of bounds" },
-			index_{ index },
-			matrix_size_{ matrixSize }
-		{}
-
-		size_t index() const { return index_; }
-		size_t matrix_size() const { return matrix_size_; }
-
-	private:
-		const size_t index_, matrix_size_;
-	};
-
-	class DMatrix_RowColOutOfBounds : public DMatrix_Exception
-	{
-	public:
-		explicit DMatrix_RowColOutOfBounds(const size_t rows, const size_t columns, const size_t matrixRows, const size_t matrixColumns) :
-			DMatrix_Exception{ "Row or column is out of bounds" },
-			rows_{ rows },
-			columns_{ columns },
-			matrix_rows_{ matrixRows },
-			matrix_columns_{ matrixColumns }
-
-		{}
-
-		size_t rows() const { return rows_; }
-		size_t columns() const { return columns_; }
-		size_t matrix_rows() const { return matrix_rows_; }
-		size_t matrix_columns() const { return matrix_columns_; }
-
-	private:
-		const size_t rows_, columns_, matrix_rows_, matrix_columns_;
-	};
+	}	
 }
