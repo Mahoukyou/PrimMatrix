@@ -4,6 +4,8 @@
 
 #include <vector>
 
+// todo, use mocks, lots of repetitive initialization code
+
 template <class T>
 struct test_data
 {
@@ -512,8 +514,44 @@ TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
 		EXPECT_EQ(addition_result.size(), 6);
 
 		EXPECT_THAT(addition_result, ::testing::ElementsAre(7, 7, 2, 7, 7, 7));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
+
+		const DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			auto tmp = matrix + matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch(const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			auto tmp = matrix + matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 
@@ -534,8 +572,44 @@ TEST(DMatrix_OperatorTests, T_002_AdditionEqualsOperator)
 		EXPECT_EQ(m1.size(), 6);
 
 		EXPECT_THAT(m1, ::testing::ElementsAre(7, 7, 2, 7, 7, 7));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
+
+		DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			matrix += matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			matrix += matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 
@@ -556,9 +630,44 @@ TEST(DMatrix_OperatorTests, T_003_SubtractOperator)
 		EXPECT_EQ(subtraction_result.size(), 6);
 
 		EXPECT_THAT(subtraction_result, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
 
+		const DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			auto tmp = matrix - matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			auto tmp = matrix - matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 
@@ -579,9 +688,44 @@ TEST(DMatrix_OperatorTests, T_003_SubtractEqualsOperator)
 		EXPECT_EQ(m1.size(), 6);
 
 		EXPECT_THAT(m1, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
 
+		DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			matrix -= matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			matrix -= matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 
@@ -604,9 +748,44 @@ TEST(DMatrix_OperatorTests, T_004_MultiplicationOperator)
 		EXPECT_EQ(multiplication_result.size(), test_data.rows * test_data.rows);
 
 		EXPECT_THAT(multiplication_result, ::testing::ElementsAre(22, 28, 49, 64));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
 
+		const DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			auto tmp = matrix * matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			auto tmp = matrix * matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 
@@ -628,9 +807,44 @@ TEST(DMatrix_OperatorTests, T_005_MultiplicationEqualsOperator)
 		EXPECT_EQ(m1.size(), test_data.rows * test_data.rows);
 
 		EXPECT_THAT(m1, ::testing::ElementsAre(22, 28, 49, 64));
+	}
 
-		// todo exception
+	{
+		using test_type = int;
 
+		DMatrix<test_type> matrix{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> matrix_diff_rows{ 1,3,{1,2,3} };
+		const DMatrix<test_type> matrix_diff_columns{ 2,1,{1,2} };
+
+		try
+		{
+			matrix *= matrix_diff_rows;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_rows.columns());
+		}
+
+		try
+		{
+			matrix *= matrix_diff_columns;
+
+			EXPECT_TRUE(false);
+		}
+		catch (const DMatrix_OperationMatrixMismatch& e)
+		{
+			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.lhs_rows(), matrix.rows());
+			EXPECT_EQ(e.lhs_columns(), matrix.columns());
+			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
+			EXPECT_EQ(e.rhs_columns(), matrix_diff_columns.columns());
+		}
 	}
 }
 

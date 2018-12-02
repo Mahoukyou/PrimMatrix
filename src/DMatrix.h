@@ -15,14 +15,6 @@ namespace PrimMatrix
 		}
 	}
 
-	// FORWARD DECLARATION
-	class DMatrix_Exception;
-	class DMatrix_InvalidInitializerSize;
-	class DMatrix_IndexOutOfBounds;
-	class DMatrix_RowColOutOfBounds;
-	class DMatrix_OperationMatrixMismatch;
-
-
 	template <class T>
 	class DMatrix
 	{
@@ -205,17 +197,17 @@ namespace PrimMatrix
 
 		DMatrix& operator+=(const DMatrix& rhs)
 		{
-			if (rows() != rhs.rows())
+			if (rows() != rhs.rows() ||
+				columns() != rhs.columns())
 			{
-				// todo
-				throw 0;
+				throw DMatrix_OperationMatrixMismatch {
+					DMatrix_OperationMatrixMismatch::EOperation::addition,
+					rows(),
+					columns(),
+					rhs.rows(),
+					rhs.columns() };
 			}
 
-			if (columns() != rhs.columns())
-			{
-				// todo
-				throw 0;
-			}
 
 			auto rhs_it = rhs.begin();
 			for (auto& el : *this)
@@ -228,17 +220,17 @@ namespace PrimMatrix
 
 		DMatrix& operator-=(const DMatrix& rhs)
 		{
-			if (rows() != rhs.rows())
+			if (rows() != rhs.rows() ||
+				columns() != rhs.columns())
 			{
-				// todo
-				throw 0;
+				throw DMatrix_OperationMatrixMismatch {
+					DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+					rows(),
+					columns(),
+					rhs.rows(),
+					rhs.columns() };
 			}
 
-			if (columns() != rhs.columns())
-			{
-				// todo
-				throw 0;
-			}
 
 			auto rhs_it = rhs.begin();
 			for (auto& el : *this)
@@ -339,7 +331,7 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch{
+			throw DMatrix_OperationMatrixMismatch {
 				DMatrix_OperationMatrixMismatch::EOperation::addition,
 				lhs.rows(),
 				lhs.columns(),
@@ -365,7 +357,7 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch{
+			throw DMatrix_OperationMatrixMismatch {
 				DMatrix_OperationMatrixMismatch::EOperation::subtraction,
 				lhs.rows(),
 				lhs.columns(),
@@ -417,7 +409,6 @@ namespace PrimMatrix
 		return result_matrix;
 	}
 
-	// Scalar multiplication
 	template <class T>
 	DMatrix<T> operator*(const DMatrix<T>& lhs, const T& rhs)
 	{
