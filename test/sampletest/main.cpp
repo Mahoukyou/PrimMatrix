@@ -2,22 +2,18 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include <iostream>
 #include <vector>
 
-#define NDEBUG
-
 template <class T>
-struct TestData
+struct test_data
 {
 	using value_type = T;
 	using size_type = typename PrimMatrix::DMatrix<T>::size_type;
 
-
-	TestData(const size_type _rows, const size_type _columns) :
-		rows{ _rows },
-		columns{ _columns },
-		size{ _rows * _columns }
+	test_data(const size_type rows_, const size_type columns_) :
+		rows{ rows_ },
+		columns{ columns_ },
+		size{ rows_ * columns_ }
 	{
 
 	}
@@ -25,7 +21,8 @@ struct TestData
 	const size_type rows, columns, size;
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
@@ -36,31 +33,31 @@ TEST(DMatrix_ConstructionTest, T_001_RowCol)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 3 };
+		const test_data<test_type> test_data{ 2, 3 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
-		const std::vector<test_type> testElements(testData.size, test_type{});
-		EXPECT_THAT(matrix, ::testing::ElementsAreArray(testElements));
+		const std::vector<test_type> test_elements(test_data.size, test_type{});
+		EXPECT_THAT(matrix, ::testing::ElementsAreArray(test_elements));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 4, 5 };
-		constexpr test_type initialValue = 5;
+		const test_data<test_type> test_data{ 4, 5 };
+		constexpr test_type initial_value = 5;
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, initialValue);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, initial_value);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
-		const std::vector<test_type> testElements(testData.size, initialValue);
-		EXPECT_THAT(matrix, ::testing::ElementsAreArray(testElements));
+		const std::vector<test_type> test_elements(test_data.size, initial_value);
+		EXPECT_THAT(matrix, ::testing::ElementsAreArray(test_elements));
 	}
 }
 
@@ -70,28 +67,28 @@ TEST(DMatrix_ConstructionTest, T_002_RowColVectorInitialized)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::vector<test_type> vec{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, vec);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, vec);
 
-		EXPECT_EQ(vec.size(), testData.size);
+		EXPECT_EQ(vec.size(), test_data.size);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(vec));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::vector<test_type> vec{ };
 
 		try
 		{
-			const DMatrix<test_type> matrix(testData.rows, testData.columns, vec);
+			const DMatrix<test_type> matrix(test_data.rows, test_data.columns, vec);
 			
 			// should throw
 			EXPECT_TRUE(false);
@@ -110,27 +107,26 @@ TEST(DMatrix_ConstructionTest, T_003_VectorVerticalOrientation)
 	{
 		using test_type = int;
 		const std::vector<test_type> vec{ 1,2,3,4,5,6,7,8,9,10 };
-		const TestData<test_type> testData{ vec.size(), 1 };
+		const test_data<test_type> test_data{ vec.size(), 1 };
 
-		const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::Vertical);
+		const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::vertical);
 
-		EXPECT_EQ(vec.size(), testData.size);
+		EXPECT_EQ(vec.size(), test_data.size);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(vec));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
 		const std::vector<test_type> vec{ };
 
 		try
 		{
-			const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::Vertical);
+			const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::vertical);
 
 			EXPECT_TRUE(false);
 		}
@@ -147,15 +143,15 @@ TEST(DMatrix_ConstructionTest, T_004_VectorHorizontalOrientation)
 	{
 		using test_type = int;
 		const std::vector<test_type> vec{ 1,2,3,4,5,6,7,8,9,10 };
-		const TestData<test_type> testData{ 1, vec.size() };
+		const test_data<test_type> test_data{ 1, vec.size() };
 
-		const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::Horizontal);
+		const DMatrix<test_type> matrix(vec, DMatrix<test_type>::EOrientation::horizontal);
 
-		EXPECT_EQ(vec.size(), testData.size);
+		EXPECT_EQ(vec.size(), test_data.size);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(vec));
 	}
@@ -167,40 +163,40 @@ TEST(DMatrix_ConstructionTest, T_005_RowColInitializerList)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, il);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, il);
 
-		EXPECT_EQ(il.size(), testData.size);
+		EXPECT_EQ(il.size(), test_data.size);
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(il));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 3, 2 };
+		const test_data<test_type> test_data{ 3, 2 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, { 0,1,2,3,4,5 });
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, { 0,1,2,3,4,5 });
 
-		EXPECT_EQ(matrix.rows(), testData.rows);
-		EXPECT_EQ(matrix.columns(), testData.columns);
-		EXPECT_EQ(matrix.size(), testData.size);
+		EXPECT_EQ(matrix.rows(), test_data.rows);
+		EXPECT_EQ(matrix.columns(), test_data.columns);
+		EXPECT_EQ(matrix.size(), test_data.size);
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray({ 0,1,2,3,4,5 }));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 
 		try
 		{
-			const DMatrix<test_type> matrix(testData.rows, testData.columns, {});
+			const DMatrix<test_type> matrix(test_data.rows, test_data.columns, {});
 
 			EXPECT_TRUE(false);
 		}
@@ -217,18 +213,18 @@ TEST(DMatrix_ConstructionTest, T_006_CopyConstructor)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+		const DMatrix<test_type> matrix{ test_data.rows, test_data.columns, il };
 
-		const auto matrixCopy = matrix;
+		const auto matrix_copy = matrix;
 
-		EXPECT_EQ(matrixCopy.rows(), testData.rows);
-		EXPECT_EQ(matrixCopy.columns(), testData.columns);
-		EXPECT_EQ(matrixCopy.size(), testData.size);
+		EXPECT_EQ(matrix_copy.rows(), test_data.rows);
+		EXPECT_EQ(matrix_copy.columns(), test_data.columns);
+		EXPECT_EQ(matrix_copy.size(), test_data.size);
 
-		EXPECT_THAT(matrixCopy, ::testing::ElementsAreArray(matrix));
+		EXPECT_THAT(matrix_copy, ::testing::ElementsAreArray(matrix));
 	}
 }
 
@@ -238,22 +234,22 @@ TEST(DMatrix_ConstructionTest, T_007_MoveConstructor)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
 
-		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+		DMatrix<test_type> matrix{ test_data.rows, test_data.columns, il };
 
-		const auto matrixMoved = std::move(matrix);
+		const auto matrix_moved = std::move(matrix);
 
 		EXPECT_EQ(matrix.rows(), 0);
 		EXPECT_EQ(matrix.columns(), 0);
 		EXPECT_EQ(matrix.size(), 0);
 
-		EXPECT_EQ(matrixMoved.rows(), testData.rows);
-		EXPECT_EQ(matrixMoved.columns(), testData.columns);
-		EXPECT_EQ(matrixMoved.size(), testData.size);
+		EXPECT_EQ(matrix_moved.rows(), test_data.rows);
+		EXPECT_EQ(matrix_moved.columns(), test_data.columns);
+		EXPECT_EQ(matrix_moved.size(), test_data.size);
 
-		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+		EXPECT_THAT(matrix_moved, ::testing::ElementsAreArray(il));
 	}
 }
 
@@ -264,19 +260,19 @@ TEST(DMatrix_ConstructionTest, T_008_CopyAssignmentOperator)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
-		DMatrix<test_type> matrixCopy{ 1,1 };
+		const DMatrix<test_type> matrix{ test_data.rows, test_data.columns, il };
+		DMatrix<test_type> matrix_copy{ 1,1 };
 
-		matrixCopy = matrix;
+		matrix_copy = matrix;
 
-		EXPECT_EQ(matrixCopy.rows(), matrix.rows());
-		EXPECT_EQ(matrixCopy.columns(), matrix.columns());
-		EXPECT_EQ(matrixCopy.size(), matrix.size());
+		EXPECT_EQ(matrix_copy.rows(), matrix.rows());
+		EXPECT_EQ(matrix_copy.columns(), matrix.columns());
+		EXPECT_EQ(matrix_copy.size(), matrix.size());
 
-		EXPECT_THAT(matrixCopy, ::testing::ElementsAreArray(matrix));
+		EXPECT_THAT(matrix_copy, ::testing::ElementsAreArray(matrix));
 	}
 }
 
@@ -286,13 +282,13 @@ TEST(DMatrix_ConstructionTest, T_009_MoveAssigmentOperator)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
 
-		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
-		DMatrix<test_type> matrixMoved{ 1,1, {5} };
+		DMatrix<test_type> matrix{ test_data.rows, test_data.columns, il };
+		DMatrix<test_type> matrix_moved{ 1,1, {5} };
 		
-		matrixMoved = std::move(matrix);
+		matrix_moved = std::move(matrix);
 
 		EXPECT_EQ(matrix.rows(), 1);
 		EXPECT_EQ(matrix.columns(), 1);
@@ -300,18 +296,19 @@ TEST(DMatrix_ConstructionTest, T_009_MoveAssigmentOperator)
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray({ 5 }));
 
-		EXPECT_EQ(matrixMoved.rows(), testData.rows);
-		EXPECT_EQ(matrixMoved.columns(), testData.columns);
-		EXPECT_EQ(matrixMoved.size(), testData.size);
+		EXPECT_EQ(matrix_moved.rows(), test_data.rows);
+		EXPECT_EQ(matrix_moved.columns(), test_data.columns);
+		EXPECT_EQ(matrix_moved.size(), test_data.size);
 
-		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+		EXPECT_THAT(matrix_moved, ::testing::ElementsAreArray(il));
 
-		matrixMoved = std::move(matrixMoved);
-		EXPECT_EQ(matrixMoved.rows(), testData.rows);
-		EXPECT_EQ(matrixMoved.columns(), testData.columns);
-		EXPECT_EQ(matrixMoved.size(), testData.size);
+		// move to itself
+		matrix_moved = std::move(matrix_moved);
+		EXPECT_EQ(matrix_moved.rows(), test_data.rows);
+		EXPECT_EQ(matrix_moved.columns(), test_data.columns);
+		EXPECT_EQ(matrix_moved.size(), test_data.size);
 
-		EXPECT_THAT(matrixMoved, ::testing::ElementsAreArray(il));
+		EXPECT_THAT(matrix_moved, ::testing::ElementsAreArray(il));
 	}
 }
 
@@ -321,27 +318,28 @@ TEST(DMatrix_AtTest, T_001_IndexNonConst)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 5, 2 };
+		const test_data<test_type> test_data{ 5, 2 };
 
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
-		DMatrix<test_type> matrix{ testData.rows, testData.columns, il };
+		DMatrix<test_type> matrix{ test_data.rows, test_data.columns, il };
 
-		for (TestData<test_type>::size_type i = 0; i < matrix.size(); ++i)
+
+		for (DMatrix<test_type>::size_type i = 0; i < matrix.size(); ++i)
 		{
 			EXPECT_EQ(matrix.at(i), *(il.begin() + i));
 		}
 
-		const auto indexOutofBounds = testData.size + 1;
+		const auto index_out_of_bounds = test_data.size + 1;
 		try
 		{
-			matrix.at(indexOutofBounds);
+			matrix.at(index_out_of_bounds);
 
 			EXPECT_TRUE(false);
 		}
 		catch (const DMatrix_IndexOutOfBounds& e)
 		{
-			EXPECT_EQ(e.index(), indexOutofBounds);
-			EXPECT_EQ(e.matrixSize(), testData.size);
+			EXPECT_EQ(e.index(), index_out_of_bounds);
+			EXPECT_EQ(e.matrix_size(), test_data.size);
 		}
 	}
 }
@@ -352,28 +350,28 @@ TEST(DMatrix_AtTest, T_002_IndexConst)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 5, 2 };
+		const test_data<test_type> test_data{ 5, 2 };
 
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, il);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, il);
 
-		for (TestData<test_type>::size_type i = 0; i < matrix.size(); ++i)
+		for (DMatrix<test_type>::size_type i = 0; i < matrix.size(); ++i)
 		{
 			EXPECT_EQ(matrix.at(i), *(il.begin() + i));
 		}
 
 
-		const auto indexOutofBounds = testData.size + 1;
+		const auto index_out_of_bounds = test_data.size + 1;
 		try
 		{
-			matrix.at(indexOutofBounds);
+			matrix.at(index_out_of_bounds);
 
 			EXPECT_TRUE(false);
 		}
 		catch(const DMatrix_IndexOutOfBounds& e)
 		{
-			EXPECT_EQ(e.index(), indexOutofBounds);
-			EXPECT_EQ(e.matrixSize(), matrix.size());
+			EXPECT_EQ(e.index(), index_out_of_bounds);
+			EXPECT_EQ(e.matrix_size(), matrix.size());
 		}
 	}
 }
@@ -385,52 +383,52 @@ TEST(DMatrix_AtTest, T_003_RowColNonConst)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 5, 2 };
+		const test_data<test_type> test_data{ 5, 2 };
 
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
-		DMatrix<test_type> matrix(testData.rows, testData.columns, il);
+		DMatrix<test_type> matrix(test_data.rows, test_data.columns, il);
 
-		for (TestData<test_type>::size_type row = 0, index = 0; row < matrix.rows(); ++row)
+		for (DMatrix<test_type>::size_type row = 0, index = 0; row < matrix.rows(); ++row)
 		{
-			for (TestData<test_type>::size_type column = 0; column < matrix.columns(); ++column, ++index)
+			for (DMatrix<test_type>::size_type column = 0; column < matrix.columns(); ++column, ++index)
 			{
 				EXPECT_EQ(matrix.at(row, column), *(il.begin() + index));
 			}
 		}
 
 		{
-			const auto rowOutOfBounds = testData.rows;
-			const auto column = testData.columns - 1;
+			const auto row_out_of_bounds = test_data.rows;
+			const auto column = test_data.columns - 1;
 			try
 			{
-				matrix.at(rowOutOfBounds, column);
+				matrix.at(row_out_of_bounds, column);
 
 				EXPECT_TRUE(false);
 			}
 			catch (const DMatrix_RowColOutOfBounds& e)
 			{
-				EXPECT_EQ(e.rows(), rowOutOfBounds);
+				EXPECT_EQ(e.rows(), row_out_of_bounds);
 				EXPECT_EQ(e.columns(), column);
-				EXPECT_EQ(e.matrixRows(), matrix.rows());
-				EXPECT_EQ(e.matrixColumns(), matrix.columns());
+				EXPECT_EQ(e.matrix_rows(), matrix.rows());
+				EXPECT_EQ(e.matrix_columns(), matrix.columns());
 			}
 		}
 
 		{
-			const auto row = testData.rows - 1;
-			const auto columnOutOfBounds = testData.columns;
+			const auto row = test_data.rows - 1;
+			const auto column_out_of_bounds = test_data.columns;
 			try
 			{
-				matrix.at(row, columnOutOfBounds);
+				matrix.at(row, column_out_of_bounds);
 
 				EXPECT_TRUE(false);
 			}
 			catch (const DMatrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row);
-				EXPECT_EQ(e.columns(), columnOutOfBounds);
-				EXPECT_EQ(e.matrixRows(), matrix.rows());
-				EXPECT_EQ(e.matrixColumns(), matrix.columns());
+				EXPECT_EQ(e.columns(), column_out_of_bounds);
+				EXPECT_EQ(e.matrix_rows(), matrix.rows());
+				EXPECT_EQ(e.matrix_columns(), matrix.columns());
 			}
 		}
 	}
@@ -442,52 +440,52 @@ TEST(DMatrix_AtTest, T_004_RowColConst)
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 5, 2 };
+		const test_data<test_type> test_data{ 5, 2 };
 
 		const std::initializer_list<test_type> il{ 1,2,3,4,5,6,7,8,9,10 };
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, il);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, il);
 
-		for (TestData<test_type>::size_type row = 0, index = 0; row < matrix.rows(); ++row)
+		for (DMatrix<test_type>::size_type row = 0, index = 0; row < matrix.rows(); ++row)
 		{
-			for (TestData<test_type>::size_type column = 0; column < matrix.columns(); ++column, ++index)
+			for (DMatrix<test_type>::size_type column = 0; column < matrix.columns(); ++column, ++index)
 			{
 				EXPECT_EQ(matrix.at(row, column), *(il.begin() + index));
 			}
 		}
 
 		{
-			const auto rowOutOfBounds = testData.rows;
-			const auto column = testData.columns - 1;
+			const auto row_out_of_bounds = test_data.rows;
+			const auto column = test_data.columns - 1;
 			try
 			{
-				matrix.at(rowOutOfBounds, column);
+				matrix.at(row_out_of_bounds, column);
 
 				EXPECT_TRUE(false);
 			}
 			catch (const DMatrix_RowColOutOfBounds& e)
 			{
-				EXPECT_EQ(e.rows(), rowOutOfBounds);
+				EXPECT_EQ(e.rows(), row_out_of_bounds);
 				EXPECT_EQ(e.columns(), column);
-				EXPECT_EQ(e.matrixRows(), matrix.rows());
-				EXPECT_EQ(e.matrixColumns(), matrix.columns());
+				EXPECT_EQ(e.matrix_rows(), matrix.rows());
+				EXPECT_EQ(e.matrix_columns(), matrix.columns());
 			}
 		}
 
 		{
-			const auto row = testData.rows - 1;
-			const auto columnOutOfBounds = testData.columns;
+			const auto row = test_data.rows - 1;
+			const auto column_out_of_bounds = test_data.columns;
 			try
 			{
-				matrix.at(row, columnOutOfBounds);
+				matrix.at(row, column_out_of_bounds);
 
 				EXPECT_TRUE(false);
 			}
 			catch (const DMatrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row);
-				EXPECT_EQ(e.columns(), columnOutOfBounds);
-				EXPECT_EQ(e.matrixRows(), matrix.rows());
-				EXPECT_EQ(e.matrixColumns(), matrix.columns());
+				EXPECT_EQ(e.columns(), column_out_of_bounds);
+				EXPECT_EQ(e.matrix_rows(), matrix.rows());
+				EXPECT_EQ(e.matrix_columns(), matrix.columns());
 			}
 		}
 	}
@@ -498,18 +496,18 @@ TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
 	using namespace PrimMatrix;
 
 	{
-		using testType = int;
+		using test_type = int;
 
-		const DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
-		const DMatrix<testType> m2{ 2,3,{6,5,1,3,2,1} };
+		const DMatrix<test_type> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> m2{ 2,3,{6,5,1,3,2,1} };
 
-		const DMatrix<testType> additionResult = m1 + m2;
+		const DMatrix<test_type> addition_result = m1 + m2;
 
-		EXPECT_EQ(additionResult.rows(), 2);
-		EXPECT_EQ(additionResult.columns(), 3);
-		EXPECT_EQ(additionResult.size(), 6);
+		EXPECT_EQ(addition_result.rows(), 2);
+		EXPECT_EQ(addition_result.columns(), 3);
+		EXPECT_EQ(addition_result.size(), 6);
 
-		EXPECT_THAT(additionResult, ::testing::ElementsAre(7, 7, 2, 7, 7, 7));
+		EXPECT_THAT(addition_result, ::testing::ElementsAre(7, 7, 2, 7, 7, 7));
 
 		// todo exception
 	}
@@ -520,10 +518,10 @@ TEST(DMatrix_OperatorTests, T_002_AdditionEqualsOperator)
 	using namespace PrimMatrix;
 
 	{
-		using testType = int;
+		using test_type = int;
 
-		DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
-		const DMatrix<testType> m2{ 2,3,{6,5,1,3,2,1} };
+		DMatrix<test_type> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> m2{ 2,3,{6,5,1,3,2,1} };
 
 		m1 += m2;
 
@@ -542,18 +540,18 @@ TEST(DMatrix_OperatorTests, T_003_SubtractOperator)
 	using namespace PrimMatrix;
 
 	{
-		using testType = int;
+		using test_type = int;
 
-		const DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
-		const DMatrix<testType> m2{ 2,3,{6,5,4,3,2,1} };
+		const DMatrix<test_type> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> m2{ 2,3,{6,5,4,3,2,1} };
 
-		const DMatrix<testType> subtractionResult = m1 - m2;
+		const DMatrix<test_type> subtraction_result = m1 - m2;
 
-		EXPECT_EQ(subtractionResult.rows(), 2);
-		EXPECT_EQ(subtractionResult.columns(), 3);
-		EXPECT_EQ(subtractionResult.size(), 6);
+		EXPECT_EQ(subtraction_result.rows(), 2);
+		EXPECT_EQ(subtraction_result.columns(), 3);
+		EXPECT_EQ(subtraction_result.size(), 6);
 
-		EXPECT_THAT(subtractionResult, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
+		EXPECT_THAT(subtraction_result, ::testing::ElementsAre(-5, -3, -3, 1, 3, 5));
 
 		// todo exception
 
@@ -565,10 +563,10 @@ TEST(DMatrix_OperatorTests, T_003_SubtractEqualsOperator)
 	using namespace PrimMatrix;
 
 	{
-		using testType = int;
+		using test_type = int;
 
-		DMatrix<testType> m1{ 2,3,{1,2,1,4,5,6} };
-		const DMatrix<testType> m2{ 2,3,{6,5,4,3,2,1} };
+		DMatrix<test_type> m1{ 2,3,{1,2,1,4,5,6} };
+		const DMatrix<test_type> m2{ 2,3,{6,5,4,3,2,1} };
 
 		m1 -= m2;
 
@@ -591,17 +589,17 @@ TEST(DMatrix_OperatorTests, T_004_MultiplicationOperator)
 	{
 		using test_type = int;
 
-		TestData<test_type> testData(2, 3);
-		const DMatrix<test_type> m1{ testData.rows, testData.columns, {1,2,3,4,5,6} };
-		const DMatrix<test_type> m2{ testData.columns, testData.rows, {1,2,3,4,5,6} };
+		const test_data<test_type> test_data(2, 3);
+		const DMatrix<test_type> m1{ test_data.rows, test_data.columns, {1,2,3,4,5,6} };
+		const DMatrix<test_type> m2{ test_data.columns, test_data.rows, {1,2,3,4,5,6} };
 
-		const DMatrix<test_type> multiplicationResult = m1 * m2;
+		const DMatrix<test_type> multiplication_result = m1 * m2;
 
-		EXPECT_EQ(multiplicationResult.rows(), testData.rows);
-		EXPECT_EQ(multiplicationResult.columns(), testData.rows);
-		EXPECT_EQ(multiplicationResult.size(), testData.rows * testData.rows);
+		EXPECT_EQ(multiplication_result.rows(), test_data.rows);
+		EXPECT_EQ(multiplication_result.columns(), test_data.rows);
+		EXPECT_EQ(multiplication_result.size(), test_data.rows * test_data.rows);
 
-		EXPECT_THAT(multiplicationResult, ::testing::ElementsAre(22, 28, 49, 64));
+		EXPECT_THAT(multiplication_result, ::testing::ElementsAre(22, 28, 49, 64));
 
 		// todo exception
 
@@ -615,15 +613,15 @@ TEST(DMatrix_OperatorTests, T_005_MultiplicationEqualsOperator)
 	{
 		using test_type = int;
 
-		TestData<test_type> testData(2, 3);
-		DMatrix<test_type> m1{ testData.rows, testData.columns, {1,2,3,4,5,6} };
-		const DMatrix<test_type> m2{ testData.columns, testData.rows, {1,2,3,4,5,6} };
+		const test_data<test_type> test_data(2, 3);
+		DMatrix<test_type> m1{ test_data.rows, test_data.columns, {1,2,3,4,5,6} };
+		const DMatrix<test_type> m2{ test_data.columns, test_data.rows, {1,2,3,4,5,6} };
 
 		m1 *= m2;
 
-		EXPECT_EQ(m1.rows(), testData.rows);
-		EXPECT_EQ(m1.columns(), testData.rows);
-		EXPECT_EQ(m1.size(), testData.rows * testData.rows);
+		EXPECT_EQ(m1.rows(), test_data.rows);
+		EXPECT_EQ(m1.columns(), test_data.rows);
+		EXPECT_EQ(m1.size(), test_data.rows * test_data.rows);
 
 		EXPECT_THAT(m1, ::testing::ElementsAre(22, 28, 49, 64));
 
@@ -639,17 +637,17 @@ TEST(DMatrix_OperatorTests, T_006_ScalarMultiplicationOperator)
 	{
 		using test_type = int;
 
-		TestData<test_type> testData(2, 3);
-		const DMatrix<test_type> matrix{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+		const test_data<test_type> test_data(2, 3);
+		const DMatrix<test_type> matrix{ test_data.rows, test_data.columns, {1,2,3,4,5,6} };
 
-		const DMatrix<test_type> scalarMulResult = matrix * 3;
-		const DMatrix<test_type> scalarMulResult2 = 3 * matrix;
-		const DMatrix<test_type> scalarMulResult3 = 3 * matrix * 3;
+		const DMatrix<test_type> scalar_mul_result = matrix * 3;
+		const DMatrix<test_type> scalar_mul_result2 = 3 * matrix;
+		const DMatrix<test_type> scalar_mul_result3 = 3 * matrix * 3;
 
 
-		EXPECT_THAT(scalarMulResult, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
-		EXPECT_THAT(scalarMulResult2, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
-		EXPECT_THAT(scalarMulResult3, ::testing::ElementsAre(9, 18, 27, 36, 45, 54));
+		EXPECT_THAT(scalar_mul_result, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
+		EXPECT_THAT(scalar_mul_result2, ::testing::ElementsAre(3, 6, 9, 12, 15, 18));
+		EXPECT_THAT(scalar_mul_result3, ::testing::ElementsAre(9, 18, 27, 36, 45, 54));
 	}
 }
 
@@ -660,8 +658,8 @@ TEST(DMatrix_OperatorTests, T_007_ScalarMultiplicationEqualsOperator)
 	{
 		using test_type = int;
 
-		TestData<test_type> testData(2, 3);
-		DMatrix<test_type> matrix{ testData.rows, testData.columns, {1,2,3,4,5,6} };
+		const test_data<test_type> test_data(2, 3);
+		DMatrix<test_type> matrix{ test_data.rows, test_data.columns, {1,2,3,4,5,6} };
 
 		matrix *= 3;
 
@@ -677,89 +675,89 @@ TEST(DMatrix_OperatorTests, T_008_EqualsAndNotEqualsOperator)
 		using test_type = int;
 
 		const DMatrix<test_type> matrix{ 2, 3, {1,2,3,4,5,6} };
-		const DMatrix<test_type> matrixDiffData{ 2, 3, {1,5,4,3,2,1} };
-		const DMatrix<test_type> matrixDiffRows{ 1, 3, {1,2,3} };
-		const DMatrix<test_type> matrixDiffCols{ 2,2,{1,2,3,4} };
+		const DMatrix<test_type> matrix_diff_data{ 2, 3, {1,5,4,3,2,1} };
+		const DMatrix<test_type> matrix_diff_rows{ 1, 3, {1,2,3} };
+		const DMatrix<test_type> matrix_diff_cols{ 2,2,{1,2,3,4} };
 		const auto copy{ matrix };
 			
 		EXPECT_TRUE(matrix == copy);
-		EXPECT_FALSE(matrix == matrixDiffData);
-		EXPECT_FALSE(matrix == matrixDiffRows);
-		EXPECT_FALSE(matrix == matrixDiffCols);
-		EXPECT_FALSE(matrixDiffRows == matrixDiffCols);
+		EXPECT_FALSE(matrix == matrix_diff_data);
+		EXPECT_FALSE(matrix == matrix_diff_rows);
+		EXPECT_FALSE(matrix == matrix_diff_cols);
+		EXPECT_FALSE(matrix_diff_rows == matrix_diff_cols);
 
 		EXPECT_FALSE(matrix != copy);
-		EXPECT_TRUE(matrix != matrixDiffData);
-		EXPECT_TRUE(matrix != matrixDiffRows);
-		EXPECT_TRUE(matrix != matrixDiffCols);
-		EXPECT_TRUE(matrixDiffRows != matrixDiffCols);
+		EXPECT_TRUE(matrix != matrix_diff_data);
+		EXPECT_TRUE(matrix != matrix_diff_rows);
+		EXPECT_TRUE(matrix != matrix_diff_cols);
+		EXPECT_TRUE(matrix_diff_rows != matrix_diff_cols);
 	}
 }
 
 
-TEST(TT, TT)
+TEST(DMatrix_Operations, T_001_Transpose)
 {
 	using namespace PrimMatrix;
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 5, 2 };
+		const test_data<test_type> test_data{ 5, 2 };
 
 		const std::vector<test_type> vec{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, vec);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, vec);
 		const DMatrix<test_type> transposed = matrix.transpose();
 
-		EXPECT_EQ(transposed.rows(), testData.columns);
-		EXPECT_EQ(transposed.columns(), testData.rows);
-		EXPECT_EQ(transposed.size(), testData.size);
+		EXPECT_EQ(transposed.rows(), test_data.columns);
+		EXPECT_EQ(transposed.columns(), test_data.rows);
+		EXPECT_EQ(transposed.size(), test_data.size);
 
 		EXPECT_THAT(transposed, ::testing::ElementsAre(1, 3, 5, 7, 9, 2, 4, 6, 8, 10));
 	}
 
 	{
 		using test_type = int;
-		const TestData<test_type> testData{ 2, 5 };
+		const test_data<test_type> test_data{ 2, 5 };
 
 		const std::vector<test_type> vec{ 1,2,3,4,5,6,7,8,9,10 };
 
-		const DMatrix<test_type> matrix(testData.rows, testData.columns, vec);
+		const DMatrix<test_type> matrix(test_data.rows, test_data.columns, vec);
 		const DMatrix<test_type> transposed = matrix.transpose();
 
-		EXPECT_EQ(transposed.rows(), testData.columns);
-		EXPECT_EQ(transposed.columns(), testData.rows);
-		EXPECT_EQ(transposed.size(), testData.size);
+		EXPECT_EQ(transposed.rows(), test_data.columns);
+		EXPECT_EQ(transposed.columns(), test_data.rows);
+		EXPECT_EQ(transposed.size(), test_data.size);
 
 		EXPECT_THAT(transposed, ::testing::ElementsAre(1, 6, 2, 7, 3, 8, 4, 9, 5, 10));
 	}
 }
 
-TEST(DMatrix_Operations, T_002_CreateIdentityMatrix)
+TEST(DMatrix_Operations, T_002_Createidentity_matrix)
 {
 	using namespace PrimMatrix;
 
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 3;
-		const auto identityMatrix = DMatrix<test_type>::createIdentityMatrix(size);
+		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identityMatrix.rows(), size);
-		EXPECT_EQ(identityMatrix.columns(), size);
-		EXPECT_EQ(identityMatrix.size(), size * size);
+		EXPECT_EQ(identity_matrix.rows(), size);
+		EXPECT_EQ(identity_matrix.columns(), size);
+		EXPECT_EQ(identity_matrix.size(), size * size);
 
-		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
+		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
 	}
 
 
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 1;
-		const auto identityMatrix = DMatrix<test_type>::createIdentityMatrix(size);
+		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identityMatrix.rows(), size);
-		EXPECT_EQ(identityMatrix.columns(), size);
-		EXPECT_EQ(identityMatrix.size(), size * size);
+		EXPECT_EQ(identity_matrix.rows(), size);
+		EXPECT_EQ(identity_matrix.columns(), size);
+		EXPECT_EQ(identity_matrix.size(), size * size);
 
-		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1));
+		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1));
 	}
 }

@@ -31,63 +31,63 @@ namespace PrimMatrix
 
 		enum class EOrientation 
 		{ 
-			Horizontal, 
-			Vertical 
+			horizontal, 
+			vertical 
 		};
 
 	public:
 		/* CONSTRUCTION || DESTRUCTION */
-		explicit DMatrix(const size_type rowCount, const size_type columnCount) :
-			row_count_{ rowCount },
-			_columnCount{ columnCount },
-			_data(row_count_ * _columnCount)
+		explicit DMatrix(const size_type row_count, const size_type column_count) :
+			row_count_{ row_count },
+			column_count_{ column_count },
+			data_(row_count_ * column_count_)
 		{ 
 			
 		}
 
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, const value_type& initialValue) :
-			row_count_{ rowCount },
-			_columnCount{ columnCount }, 
-			_data(row_count_ * _columnCount, initialValue)
+		explicit DMatrix(const size_type row_count, const size_type column_count, const value_type& initial_value) :
+			row_count_{ row_count },
+			column_count_{ column_count }, 
+			data_(row_count_ * column_count_, initial_value)
 
 		{
 
 		}
 
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, const std::vector<value_type>& arr) :
-			row_count_{ rowCount },
-			_columnCount{ columnCount }
+		explicit DMatrix(const size_type row_count, const size_type column_count, const std::vector<value_type>& arr) :
+			row_count_{ row_count },
+			column_count_{ column_count }
 		{
-			if (arr.size() == 0)
+			if (arr.empty())
 			{
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			_data = arr;
+			data_ = arr;
 		}
 
-		explicit DMatrix(const size_type rowCount, const size_type columnCount, std::initializer_list<value_type> il) : 
-			row_count_{ rowCount },
-			_columnCount{ columnCount }
+		explicit DMatrix(const size_type row_count, const size_type column_count, std::initializer_list<value_type> il) : 
+			row_count_{ row_count },
+			column_count_{ column_count }
 		{
 			if (il.size() == 0)
 			{
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			_data = std::move(il);
+			data_ = std::move(il);
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
-			row_count_{ orientation == EOrientation::Vertical ? arr.size() : 1 },
-			_columnCount{ orientation == EOrientation::Horizontal ? arr.size() : 1 }
+			row_count_{ orientation == EOrientation::vertical ? arr.size() : 1 },
+			column_count_{ orientation == EOrientation::horizontal ? arr.size() : 1 }
 		{
-			if (arr.size() == 0)
+			if (arr.empty())
 			{
 				throw DMatrix_ArrayIsEmpty{};
 			}
 
-			_data = arr;
+			data_ = arr;
 		}
 
 		virtual ~DMatrix() = default;
@@ -95,10 +95,10 @@ namespace PrimMatrix
 		DMatrix(const DMatrix&) = default;
 		DMatrix(DMatrix&& rhs) noexcept :
 			row_count_{ rhs.row_count_ },
-			_columnCount{ rhs._columnCount },
-			_data{ std::move(rhs._data) }
+			column_count_{ rhs.column_count_ },
+			data_{ std::move(rhs.data_) }
 		{
-			rhs.row_count_ = rhs._columnCount = 0;
+			rhs.row_count_ = rhs.column_count_ = 0;
 		}
 
 		/* COPY / MOVE OPERATIONS */
@@ -114,17 +114,17 @@ namespace PrimMatrix
 			using std::swap;
 
 			swap(lhs.row_count_, rhs.row_count_);
-			swap(lhs._columnCount, rhs._columnCount);
-			swap(lhs._data, rhs._data);
+			swap(lhs.column_count_, rhs.column_count_);
+			swap(lhs.data_, rhs.data_);
 		}
 
 		/* ACCESSORS */
 		size_type rows() const noexcept { return row_count_; }
-		size_type columns() const noexcept { return _columnCount; }
-		size_type size() const noexcept { return _data.size(); }
+		size_type columns() const noexcept { return column_count_; }
+		size_type size() const noexcept { return data_.size(); }
 
-		pointer data() noexcept { return _data.data(); }
-		const_pointer data() const noexcept { return _data.data(); }
+		pointer data() noexcept { return data_.data(); }
+		const_pointer data() const noexcept { return data_.data(); }
 
 		reference at(const size_type index)
 		{
@@ -133,7 +133,7 @@ namespace PrimMatrix
 				throw DMatrix_IndexOutOfBounds{ index, size() };
 			}
 
-			return _data[index];
+			return data_[index];
 		}
 
 		const_reference at(const size_type index) const
@@ -143,7 +143,7 @@ namespace PrimMatrix
 				throw DMatrix_IndexOutOfBounds{ index, size() };
 			}
 
-			return _data[index];
+			return data_[index];
 		}
 
 		reference at(const size_type row, const size_type column)
@@ -154,7 +154,7 @@ namespace PrimMatrix
 				throw DMatrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
-			return _data[rowColToIndex(row, column)];
+			return data_[to_index(row, column)];
 		}
 
 		const_reference at(const size_type row, const size_type column) const
@@ -165,37 +165,37 @@ namespace PrimMatrix
 				throw DMatrix_RowColOutOfBounds{row, column, rows(), columns()};
 			}
 
-			return _data[rowColToIndex(row, column)];
+			return data_[to_index(row, column)];
 		}
 
 		/* tmp ITERATORS -- vector ones for now */
-		iterator begin() { return _data.begin(); }
-		const_iterator begin() const { return _data.begin(); }
-		iterator end() { return _data.end(); }
-		const_iterator end() const { return _data.end(); }
+		iterator begin() { return data_.begin(); }
+		const_iterator begin() const { return data_.begin(); }
+		iterator end() { return data_.end(); }
+		const_iterator end() const { return data_.end(); }
 
-		const_iterator cbegin() const { return _data.cbegin(); }
-		const_iterator cend() const { return _data.cend(); }
+		const_iterator cbegin() const { return data_.cbegin(); }
+		const_iterator cend() const { return data_.cend(); }
 
 		/* OPERATORS */
 		reference operator[](const size_type index)
 		{
-			return _data[index];
+			return data_[index];
 		}
 
 		const_reference operator[](const size_type index) const
 		{
-			return _data[index];
+			return data_[index];
 		}
 
 		reference operator()(const size_type row, const size_type column)
 		{
-			return _data[rowColToIndex(row, column)];
+			return data_[to_index(row, column)];
 		}
 
 		const_reference operator()(const size_type row, const size_type column) const
 		{
-			return _data[rowColToIndex(row, column)];
+			return data_[to_index(row, column)];
 		}
 
 		DMatrix& operator+=(const DMatrix& rhs)
@@ -212,10 +212,10 @@ namespace PrimMatrix
 				throw 0;
 			}
 
-			auto rhsIt = rhs.begin();
+			auto rhs_it = rhs.begin();
 			for (auto& el : *this)
 			{
-				el += *rhsIt++;
+				el += *rhs_it++;
 			}
 
 			return *this;
@@ -235,10 +235,10 @@ namespace PrimMatrix
 				throw 0;
 			}
 
-			auto rhsIt = rhs.begin();
+			auto rhs_it = rhs.begin();
 			for (auto& el : *this)
 			{
-				el -= *rhsIt++;
+				el -= *rhs_it++;
 			}
 
 			return *this;
@@ -271,40 +271,40 @@ namespace PrimMatrix
 		/* OPERATIONS */
 		DMatrix transpose() const
 		{
-			DMatrix resultMatrix{ _columnCount, row_count_ };
+			DMatrix result_matrix{ column_count_, row_count_ };
 
-			auto currentMatrixIterator = _data.begin();
-			for (size_type resultColumn = 0; resultColumn < resultMatrix.columns(); ++resultColumn)
+			auto current_matrix_iterator = data_.begin();
+			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
 			{
-				for (size_type resultRow = 0; resultRow < resultMatrix.rows(); ++resultRow, ++currentMatrixIterator)
+				for (size_type result_row = 0; result_row < result_matrix.rows(); ++result_row, ++current_matrix_iterator)
 				{
-					resultMatrix(resultRow, resultColumn) = *currentMatrixIterator;
+					result_matrix(result_row, result_column) = *current_matrix_iterator;
 				}
 			}
 
-			return resultMatrix;
+			return result_matrix;
 		}
 
-		static DMatrix createIdentityMatrix(const size_type size, const value_type& value = 1)
+		static DMatrix create_identity_matrix(const size_type size, const value_type& value = 1)
 		{
-			DMatrix identityMatrix{ size, size };
+			DMatrix identity_matrix{ size, size };
 			
 			for (size_type i = 0; i < size; ++i)
 			{
-				identityMatrix(i, i) = value;
+				identity_matrix(i, i) = value;
 			}
 
-			return identityMatrix;
+			return identity_matrix;
 		}
 
 	private:
-		size_type rowColToIndex(const size_type row, const size_type column) const
+		size_type to_index(const size_type row, const size_type column) const
 		{
-			return row * _columnCount + column;
+			return row * column_count_ + column;
 		}
 
-		size_type row_count_, _columnCount;
-		std::vector<value_type> _data;
+		size_type row_count_, column_count_;
+		std::vector<value_type> data_;
 
 	};
 
@@ -317,10 +317,10 @@ namespace PrimMatrix
 			return false;
 		}
 
-		auto lhsIt = lhs.begin();
-		for (const auto& rhsEl : rhs)
+		auto lhs_it = lhs.begin();
+		for (const auto& rhs_el : rhs)
 		{
-			if (*lhsIt++ != rhsEl)
+			if (*lhs_it++ != rhs_el)
 			{
 				return false;
 			}
@@ -350,16 +350,16 @@ namespace PrimMatrix
 			throw 0;
 		}
 
-		DMatrix<T> resultMatrix(lhs.rows(), lhs.columns());
+		DMatrix<T> result_matrix(lhs.rows(), lhs.columns());
 		
-		auto lhsIt = lhs.begin();
-		auto rhsIt = rhs.begin();
-		for (auto& resultEl : resultMatrix)
+		auto lhs_it = lhs.begin();
+		auto rhs_it = rhs.begin();
+		for (auto& result_el : result_matrix)
 		{
-			resultEl = *lhsIt++ + *rhsIt++;
+			result_el = *lhs_it++ + *rhs_it++;
 		}
 
-		return resultMatrix;
+		return result_matrix;
 	}
 
 	template <class T>
@@ -377,16 +377,16 @@ namespace PrimMatrix
 			throw 0;
 		}
 
-		DMatrix<T> resultMatrix(lhs.rows(), lhs.columns());
+		DMatrix<T> result_matrix(lhs.rows(), lhs.columns());
 
-		auto lhsIt = lhs.begin();
-		auto rhsIt = rhs.begin();
-		for (auto& resultEl : resultMatrix)
+		auto lhs_it = lhs.begin();
+		auto rhs_it = rhs.begin();
+		for (auto& result_el : result_matrix)
 		{
-			resultEl = *lhsIt++ - *rhsIt++;
+			result_el = *lhs_it++ - *rhs_it++;
 		}
 
-		return resultMatrix;
+		return result_matrix;
 	}
 
 	template <class T>
@@ -400,36 +400,36 @@ namespace PrimMatrix
 			throw 0;
 		}
 
-		DMatrix<T> resultMatrix{ lhs.rows(), rhs.columns() };
+		DMatrix<T> result_matrix{ lhs.rows(), rhs.columns() };
 
-		const auto sumLen = lhs.columns();
-		for (size_type resultRow = 0; resultRow < resultMatrix.rows(); ++resultRow)
+		const auto sum_len = lhs.columns();
+		for (size_type result_row = 0; result_row < result_matrix.rows(); ++result_row)
 		{
-			for (size_type resultColumn = 0; resultColumn < resultMatrix.columns(); ++resultColumn)
+			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
 			{
-				for (size_type sumIndex = 0; sumIndex < sumLen; ++sumIndex)
+				for (size_type sum_index = 0; sum_index < sum_len; ++sum_index)
 				{
-					resultMatrix(resultRow, resultColumn) += lhs(resultRow, sumIndex) * rhs(sumIndex, resultColumn);
+					result_matrix(result_row, result_column) += lhs(result_row, sum_index) * rhs(sum_index, result_column);
 				}
 			}
 		}
 
-		return resultMatrix;
+		return result_matrix;
 	}
 
 	// Scalar multiplication
 	template <class T>
 	DMatrix<T> operator*(const DMatrix<T>& lhs, const T& rhs)
 	{
-		DMatrix<T> resultMatrix{ lhs.rows(), lhs.columns() };
+		DMatrix<T> result_matrix{ lhs.rows(), lhs.columns() };
 
-		auto resultIt = resultMatrix.begin();
-		for (const auto& lhsValue : lhs)
+		auto result_it = result_matrix.begin();
+		for (const auto& lhs_value : lhs)
 		{
-			*resultIt++ = lhsValue * rhs;
+			*result_it++ = lhs_value * rhs;
 		}
 
-		return resultMatrix;
+		return result_matrix;
 	}
 
 	template <class T>
@@ -458,15 +458,15 @@ namespace PrimMatrix
 	public:
 		explicit DMatrix_IndexOutOfBounds(const size_t index, const size_t matrixSize) :
 			DMatrix_Exception{ "Index is out of bounds" },
-			_index{ index },
-			_matrixSize{ matrixSize }
+			index_{ index },
+			matrix_size_{ matrixSize }
 		{}
 
-		size_t index() const { return _index; }
-		size_t matrixSize() const { return _matrixSize; }
+		size_t index() const { return index_; }
+		size_t matrix_size() const { return matrix_size_; }
 
 	private:
-		const size_t _index, _matrixSize;
+		const size_t index_, matrix_size_;
 	};
 
 	class DMatrix_RowColOutOfBounds : public DMatrix_Exception
@@ -474,19 +474,19 @@ namespace PrimMatrix
 	public:
 		explicit DMatrix_RowColOutOfBounds(const size_t rows, const size_t columns, const size_t matrixRows, const size_t matrixColumns) :
 			DMatrix_Exception{ "Row or column is out of bounds" },
-			_rows{ rows },
-			_columns{ columns },
-			_matrixRows{ matrixRows },
-			_matrixColumn{ matrixColumns }
+			rows_{ rows },
+			columns_{ columns },
+			matrix_rows_{ matrixRows },
+			matrix_columns_{ matrixColumns }
 
 		{}
 
-		size_t rows() const { return _rows; }
-		size_t columns() const { return _columns; }
-		size_t matrixRows() const { return _matrixRows; }
-		size_t matrixColumns() const { return _matrixColumn; }
+		size_t rows() const { return rows_; }
+		size_t columns() const { return columns_; }
+		size_t matrix_rows() const { return matrix_rows_; }
+		size_t matrix_columns() const { return matrix_columns_; }
 
 	private:
-		const size_t _rows, _columns, _matrixRows, _matrixColumn;
+		const size_t rows_, columns_, matrix_rows_, matrix_columns_;
 	};
 }
