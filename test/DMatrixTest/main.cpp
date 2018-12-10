@@ -957,25 +957,25 @@ TEST(DMatrix_Operations, T_002_CreateIdentityMatrix)
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 3;
-		const auto identityMatrix = DMatrix<test_type>::create_identity_matrix(size);
+		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identityMatrix.rows(), size);
-		EXPECT_EQ(identityMatrix.columns(), size);
-		EXPECT_EQ(identityMatrix.size(), size * size);
+		EXPECT_EQ(identity_matrix.rows(), size);
+		EXPECT_EQ(identity_matrix.columns(), size);
+		EXPECT_EQ(identity_matrix.size(), size * size);
 
-		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
+		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1, 0, 0, 0, 1, 0, 0, 0, 1));
 	}
 
 
 	{
 		using test_type = int;
 		const DMatrix<test_type>::value_type size = 1;
-		const auto identityMatrix = DMatrix<test_type>::create_identity_matrix(size);
+		const auto identity_matrix = DMatrix<test_type>::create_identity_matrix(size);
 
-		EXPECT_EQ(identityMatrix.rows(), size);
-		EXPECT_EQ(identityMatrix.columns(), size);
-		EXPECT_EQ(identityMatrix.size(), size * size);
+		EXPECT_EQ(identity_matrix.rows(), size);
+		EXPECT_EQ(identity_matrix.columns(), size);
+		EXPECT_EQ(identity_matrix.size(), size * size);
 
-		EXPECT_THAT(identityMatrix, ::testing::ElementsAre(1));
+		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1));
 	}
 }
