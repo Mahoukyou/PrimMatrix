@@ -54,6 +54,7 @@ TEST(ConstructionTest, MoveConstruction)
 {
 	{
 		SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
+
 		// move has no effect, but still worth to check if [copied]
 		const auto copy_matrix{ std::move(matrix) };
 
@@ -98,7 +99,7 @@ TEST(ConstructionTest, MoveAssigment)
 	}
 }
 
-TEST(DataAccessTest, ByIndex) /// rename
+TEST(DataAccessTest, ByIndex)
 {
 	{
 		constexpr std::array<int, 6> test_data{ 1, 2, 3, 4, 5, 6 };
@@ -160,7 +161,7 @@ TEST(OperatorTest, AddEqualOperator)
 {
 	{
 		SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
-		const SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
+		constexpr SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
 
 		matrix1 += matrix2;
 
@@ -193,10 +194,10 @@ TEST(OperatorTest, MultiplayEqualScalarOperator)
 TEST(OperatorTest, AdditionOperator)
 {
 	{
-		const SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
-		const SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
+		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
 
-		const auto addition_result = matrix1 + matrix2;
+		constexpr auto addition_result = matrix1 + matrix2;
 
 		EXPECT_THAT(addition_result, ::testing::ElementsAreArray({ 7, 7, 7, 7, 7, 7 }));
 	}
@@ -205,10 +206,10 @@ TEST(OperatorTest, AdditionOperator)
 TEST(OperatorTest, SubtractionOperator)
 {
 	{
-		const SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
-		const SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
+		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
 
-		const auto subtraction_result = matrix1 - matrix2;
+		constexpr auto subtraction_result = matrix1 - matrix2;
 
 		EXPECT_THAT(subtraction_result, ::testing::ElementsAreArray({ -5, -3, -1, 1, 3, 5 }));
 	}
@@ -217,9 +218,9 @@ TEST(OperatorTest, SubtractionOperator)
 TEST(OperatorTest, MultiplicationByScalarOperator)
 {
 	{
-		const SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
 		
-		const auto multiplication_result = matrix1 * 4;
+		constexpr auto multiplication_result = matrix1 * 4;
 
 		EXPECT_THAT(multiplication_result, ::testing::ElementsAreArray({ 4, 8, 12, 16, 20, 24 }));
 	}

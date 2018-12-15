@@ -169,7 +169,7 @@ namespace PrimMatrix
 		SMatrix<T, rows_, columns_> result_matrix{};
 		for(size_t i = 0; i < result_matrix.size(); ++i)
 		{
-			result_matrix[i] = lhs[i] + rhs[i];
+			result_matrix.data_[i] = lhs[i] + rhs[i];
 		}
 
 		return result_matrix;
@@ -183,7 +183,7 @@ namespace PrimMatrix
 		SMatrix<T, rows_, columns_> result_matrix{};
 		for (size_t i = 0; i < result_matrix.size(); ++i)
 		{
-			result_matrix[i] = lhs[i] - rhs[i];
+			result_matrix.data_[i] = lhs[i] - rhs[i];
 		}
 
 		return result_matrix;
@@ -219,7 +219,7 @@ namespace PrimMatrix
 
 		for(size_t i = 0; i < lhs.size(); ++i)
 		{
-			result_matrix[i] = lhs[i] * rhs;
+			result_matrix.data_[i] = lhs[i] * rhs;
 		}
 
 		return result_matrix;
