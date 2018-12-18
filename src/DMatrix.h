@@ -163,14 +163,35 @@ namespace PrimMatrix
 			return data_[to_index(row, column)];
 		}
 
-		/* tmp ITERATORS -- vector ones for now */
-		iterator begin() { return data_.begin(); }
-		const_iterator begin() const { return cbegin(); }
-		iterator end() { return data_.end(); }
-		const_iterator end() const { return cend(); }
+		iterator begin() noexcept
+		{
+			return data_.begin();
+		}
 
-		const_iterator cbegin() const { return data_.cbegin(); }
-		const_iterator cend() const { return data_.cend(); }
+		const_iterator begin() const noexcept
+		{
+			return cbegin();
+		}
+
+		iterator end() noexcept
+		{
+			return data_.end();
+		}
+
+		const_iterator end() const noexcept
+		{
+			return cend();
+		}
+
+		const_iterator cbegin() const noexcept
+		{
+			return data_.cbegin();
+		}
+
+		const_iterator cend() const noexcept
+		{
+			return data_.cend();
+		}
 
 		/* OPERATORS */
 		reference operator[](const size_type index)
@@ -286,7 +307,7 @@ namespace PrimMatrix
 		}
 
 	private:
-		size_type to_index(const size_type row, const size_type column) const
+		size_type to_index(const size_type row, const size_type column) const noexcept
 		{
 			return row * columns() + column;
 		}

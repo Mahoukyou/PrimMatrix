@@ -22,8 +22,8 @@ namespace PrimMatrix
 
 		}
 
-		size_t initializer_size() const { return initializer_size_; }
-		size_t matrix_size() const { return matrix_size_; }
+		size_t initializer_size() const noexcept { return initializer_size_; }
+		size_t matrix_size() const noexcept { return matrix_size_; }
 
 
 	private:
@@ -41,8 +41,8 @@ namespace PrimMatrix
 
 		}
 
-		size_t index() const { return index_; }
-		size_t matrix_size() const { return matrix_size_; }
+		size_t index() const noexcept { return index_; }
+		size_t matrix_size() const noexcept { return matrix_size_; }
 
 	private:
 		const size_t index_, matrix_size_;
@@ -61,10 +61,10 @@ namespace PrimMatrix
 
 		}
 
-		size_t rows() const { return rows_; }
-		size_t columns() const { return columns_; }
-		size_t matrix_rows() const { return matrix_rows_; }
-		size_t matrix_columns() const { return matrix_columns_; }
+		size_t rows() const noexcept { return rows_; }
+		size_t columns() const noexcept { return columns_; }
+		size_t matrix_rows() const noexcept { return matrix_rows_; }
+		size_t matrix_columns() const noexcept { return matrix_columns_; }
 
 	private:
 		const size_t rows_, columns_, matrix_rows_, matrix_columns_;
@@ -91,11 +91,11 @@ namespace PrimMatrix
 
 		}
 
-		EOperation operation() const { return operation_; };
-		size_t lhs_rows() const { return lhs_rows_; }
-		size_t lhs_columns() const { return lhs_columns_; }
-		size_t rhs_rows() const { return rhs_rows_; }
-		size_t rhs_columns() const { return rhs_columns_; }
+		EOperation operation() const noexcept { return operation_; };
+		size_t lhs_rows() const noexcept { return lhs_rows_; }
+		size_t lhs_columns() const noexcept { return lhs_columns_; }
+		size_t rhs_rows() const noexcept { return rhs_rows_; }
+		size_t rhs_columns() const noexcept { return rhs_columns_; }
 
 
 	private:

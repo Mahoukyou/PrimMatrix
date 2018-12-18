@@ -9,6 +9,8 @@ namespace PrimMatrix
 	template <class T, size_t rows_, size_t columns_>
 	class SMatrix
 	{
+		static_assert(rows_ * columns_ != 0, "Empty matrices are not supported at the moment");
+
 	public:
 		using value_type = T;
 		using size_type = size_t;
@@ -28,7 +30,7 @@ namespace PrimMatrix
 		pointer data() noexcept { return data_; }
 		const_pointer data() const noexcept { return data_; }
 
-		reference at(const size_type index)
+		constexpr reference at(const size_type index)
 		{
 			if(index >= size())
 			{
@@ -50,7 +52,7 @@ namespace PrimMatrix
 			return data_[index];
 		}
 
-		reference at(const size_type row, const size_type column)
+		constexpr reference at(const size_type row, const size_type column)
 		{
 			if (row >= rows() || 
 				column >= columns())
@@ -74,7 +76,7 @@ namespace PrimMatrix
 			return data_[to_index(row, column)];
 		}
 
-		reference operator[](const size_type index)
+		constexpr reference operator[](const size_type index)
 		{
 			return data_[index];
 		}
@@ -84,7 +86,7 @@ namespace PrimMatrix
 			return data_[index];
 		}
 
-		reference operator()(const size_type row, const size_type column)
+		constexpr reference operator()(const size_type row, const size_type column)
 		{
 			return data_[to_index(row, column)];
 		}
@@ -94,13 +96,35 @@ namespace PrimMatrix
 			return data_[to_index(row, column)];
 		}
 
-		iterator begin() { return std::begin(data_); }
-		constexpr const_iterator begin() const { return std::cbegin(data_); }
-		iterator end() { return std::end(data_); }
-		constexpr const_iterator end() const { return std::cend(data_); }
+		iterator begin() noexcept
+		{
+			return std::begin(data_);
+		}
 
-		iterator cbegin() { return std::cbegin(data_); }
-		constexpr const_iterator cend() const { return std::cend(data_); }
+		constexpr const_iterator begin() const noexcept
+		{
+			return std::cbegin(data_);
+		}
+
+		iterator end() noexcept
+		{
+			return std::end(data_);
+		}
+
+		constexpr const_iterator end() const noexcept
+		{
+			return std::cend(data_);
+		}
+
+		iterator cbegin() noexcept
+		{
+			return std::cbegin(data_);
+		}
+
+		constexpr const_iterator cend() const noexcept
+		{
+			return std::cend(data_);
+		}
 
 		SMatrix& operator+=(const SMatrix& rhs)
 		{
@@ -124,7 +148,6 @@ namespace PrimMatrix
 			return *this;
 		}
 
-		// todo *=
 		SMatrix& operator*=(const value_type& rhs)
 		{
 			for (auto& el : *this)
@@ -155,7 +178,7 @@ namespace PrimMatrix
 		value_type data_[rows_ * columns_];
 
 	private:
-		constexpr size_type to_index(const size_type row, const size_type column) const
+		constexpr size_type to_index(const size_type row, const size_type column) const noexcept
 		{
 			return row * columns() + column;
 		}
@@ -169,7 +192,7 @@ namespace PrimMatrix
 		SMatrix<T, rows_, columns_> result_matrix{};
 		for(size_t i = 0; i < result_matrix.size(); ++i)
 		{
-			result_matrix.data_[i] = lhs[i] + rhs[i];
+			result_matrix[i] = lhs[i] + rhs[i];
 		}
 
 		return result_matrix;
@@ -183,7 +206,7 @@ namespace PrimMatrix
 		SMatrix<T, rows_, columns_> result_matrix{};
 		for (size_t i = 0; i < result_matrix.size(); ++i)
 		{
-			result_matrix.data_[i] = lhs[i] - rhs[i];
+			result_matrix[i] = lhs[i] - rhs[i];
 		}
 
 		return result_matrix;
@@ -219,7 +242,7 @@ namespace PrimMatrix
 
 		for(size_t i = 0; i < lhs.size(); ++i)
 		{
-			result_matrix.data_[i] = lhs[i] * rhs;
+			result_matrix[i] = lhs[i] * rhs;
 		}
 
 		return result_matrix;

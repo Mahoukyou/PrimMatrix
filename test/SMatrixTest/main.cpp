@@ -4,7 +4,6 @@
 
 #include <array>
 
-
 using namespace PrimMatrix;
 
 int main(int argc, char **argv)
@@ -56,7 +55,7 @@ TEST(ConstructionTest, MoveConstruction)
 		SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
 
 		// move has no effect, but still worth to check if [copied]
-		const auto copy_matrix{ std::move(matrix) };
+		const SMatrix<int, 2, 3> copy_matrix{ std::move(matrix) };
 
 		EXPECT_EQ(copy_matrix.rows(), 2);
 		EXPECT_EQ(copy_matrix.columns(), 3);
@@ -69,7 +68,7 @@ TEST(ConstructionTest, MoveConstruction)
 TEST(ConstructionTest, CopyAssigment)
 {
 	{
-		const SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
 		SMatrix<int, 2, 3> copy_matrix{ };
 
 		copy_matrix = matrix;
@@ -85,7 +84,7 @@ TEST(ConstructionTest, CopyAssigment)
 TEST(ConstructionTest, MoveAssigment)
 {
 	{
-		const SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
 		SMatrix<int, 2, 3> copy_matrix{ };
 
 		// move has no effect, but still worth to check if copied
@@ -105,7 +104,7 @@ TEST(DataAccessTest, ByIndex)
 		constexpr std::array<int, 6> test_data{ 1, 2, 3, 4, 5, 6 };
 		
 		SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
-		const auto const_matrix{ matrix };
+		const SMatrix<int, 2, 3> const_matrix{ matrix };
 
 		for(size_t index = 0; index < matrix.size(); ++index)
 		{
@@ -126,7 +125,7 @@ TEST(DataAccessTest, ByRowAndColumn)
 		constexpr std::array<int, 6> test_data{ 1, 2, 3, 4, 5, 6 };
 
 		SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
-		const auto const_matrix{ matrix };
+		const SMatrix<int, 2, 3> const_matrix{ matrix };
 
 		for (size_t row = 0, index = 0; row < matrix.rows(); ++row)
 		{
@@ -149,8 +148,8 @@ TEST(IteratorTest, NormalIteartors)
 	{
 		constexpr std::array<int, 6> test_data{ 1, 2, 3, 4, 5, 6 };
 
-		SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
-		const auto const_matrix{ matrix };
+		constexpr SMatrix<int, 2, 3> matrix{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 2, 3> const_matrix{ matrix };
 
 		EXPECT_THAT(matrix, ::testing::ElementsAreArray(test_data));
 		EXPECT_THAT(const_matrix, ::testing::ElementsAreArray(test_data));
@@ -197,7 +196,7 @@ TEST(OperatorTest, AdditionOperator)
 		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
 		constexpr SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
 
-		constexpr auto addition_result = matrix1 + matrix2;
+		constexpr SMatrix<int, 2, 3> addition_result = matrix1 + matrix2;
 
 		EXPECT_THAT(addition_result, ::testing::ElementsAreArray({ 7, 7, 7, 7, 7, 7 }));
 	}
@@ -209,9 +208,21 @@ TEST(OperatorTest, SubtractionOperator)
 		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
 		constexpr SMatrix<int, 2, 3> matrix2{ 6, 5, 4, 3, 2, 1 };
 
-		constexpr auto subtraction_result = matrix1 - matrix2;
+		constexpr SMatrix<int, 2, 3> subtraction_result = matrix1 - matrix2;
 
 		EXPECT_THAT(subtraction_result, ::testing::ElementsAreArray({ -5, -3, -1, 1, 3, 5 }));
+	}
+}		
+
+TEST(OperatorTest, MultiplicationOperator)
+{
+	{
+		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
+		constexpr SMatrix<int, 3, 2> matrix2{ 6, 5, 4, 3, 2, 1 };
+
+		constexpr SMatrix<int, 2, 2> multiplication_result = matrix1 * matrix2;
+
+		EXPECT_THAT(multiplication_result, ::testing::ElementsAreArray({ 20, 14, 56, 41}));
 	}
 }
 
@@ -220,7 +231,7 @@ TEST(OperatorTest, MultiplicationByScalarOperator)
 	{
 		constexpr SMatrix<int, 2, 3> matrix1{ 1, 2, 3, 4, 5, 6 };
 		
-		constexpr auto multiplication_result = matrix1 * 4;
+		constexpr SMatrix<int, 2, 3> multiplication_result = matrix1 * 4;
 
 		EXPECT_THAT(multiplication_result, ::testing::ElementsAreArray({ 4, 8, 12, 16, 20, 24 }));
 	}
