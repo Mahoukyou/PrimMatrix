@@ -95,7 +95,7 @@ TEST(DMatrix_ConstructionTest, T_002_RowColVectorInitialized)
 			// should throw
 			EXPECT_TRUE(false);
 		}
-		catch(const DMatrix_InvalidInitializerSize& e)
+		catch(const Matrix_InvalidInitializerSize& e)
 		{
 			EXPECT_EQ(e.initializer_size(), vec.size());
 			EXPECT_EQ(e.matrix_size(), test_data.size);
@@ -203,7 +203,7 @@ TEST(DMatrix_ConstructionTest, T_005_RowColInitializerList)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_InvalidInitializerSize& e)
+		catch (const Matrix_InvalidInitializerSize& e)
 		{
 			const DMatrix<test_type>::size_type il_size = 4;
 			EXPECT_EQ(e.initializer_size(), il_size);
@@ -342,7 +342,7 @@ TEST(DMatrix_AtTest, T_001_IndexNonConst)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_IndexOutOfBounds& e)
+		catch (const Matrix_IndexOutOfBounds& e)
 		{
 			EXPECT_EQ(e.index(), index_out_of_bounds);
 			EXPECT_EQ(e.matrix_size(), test_data.size);
@@ -374,7 +374,7 @@ TEST(DMatrix_AtTest, T_002_IndexConst)
 
 			EXPECT_TRUE(false);
 		}
-		catch(const DMatrix_IndexOutOfBounds& e)
+		catch(const Matrix_IndexOutOfBounds& e)
 		{
 			EXPECT_EQ(e.index(), index_out_of_bounds);
 			EXPECT_EQ(e.matrix_size(), matrix.size());
@@ -411,7 +411,7 @@ TEST(DMatrix_AtTest, T_003_RowColNonConst)
 
 				EXPECT_TRUE(false);
 			}
-			catch (const DMatrix_RowColOutOfBounds& e)
+			catch (const Matrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row_out_of_bounds);
 				EXPECT_EQ(e.columns(), column);
@@ -429,7 +429,7 @@ TEST(DMatrix_AtTest, T_003_RowColNonConst)
 
 				EXPECT_TRUE(false);
 			}
-			catch (const DMatrix_RowColOutOfBounds& e)
+			catch (const Matrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row);
 				EXPECT_EQ(e.columns(), column_out_of_bounds);
@@ -468,7 +468,7 @@ TEST(DMatrix_AtTest, T_004_RowColConst)
 
 				EXPECT_TRUE(false);
 			}
-			catch (const DMatrix_RowColOutOfBounds& e)
+			catch (const Matrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row_out_of_bounds);
 				EXPECT_EQ(e.columns(), column);
@@ -486,7 +486,7 @@ TEST(DMatrix_AtTest, T_004_RowColConst)
 
 				EXPECT_TRUE(false);
 			}
-			catch (const DMatrix_RowColOutOfBounds& e)
+			catch (const Matrix_RowColOutOfBounds& e)
 			{
 				EXPECT_EQ(e.rows(), row);
 				EXPECT_EQ(e.columns(), column_out_of_bounds);
@@ -529,9 +529,9 @@ TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch(const DMatrix_OperationMatrixMismatch& e)
+		catch(const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::addition);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -544,9 +544,9 @@ TEST(DMatrix_OperatorTests, T_001_AdditionOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::addition);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
@@ -587,9 +587,9 @@ TEST(DMatrix_OperatorTests, T_002_AdditionEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::addition);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -602,9 +602,9 @@ TEST(DMatrix_OperatorTests, T_002_AdditionEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::addition);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::addition);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
@@ -645,9 +645,9 @@ TEST(DMatrix_OperatorTests, T_003_SubtractOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::subtraction);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -660,9 +660,9 @@ TEST(DMatrix_OperatorTests, T_003_SubtractOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::subtraction);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
@@ -703,9 +703,9 @@ TEST(DMatrix_OperatorTests, T_003_SubtractEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::subtraction);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -718,9 +718,9 @@ TEST(DMatrix_OperatorTests, T_003_SubtractEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::subtraction);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::subtraction);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
@@ -763,9 +763,9 @@ TEST(DMatrix_OperatorTests, T_004_MultiplicationOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::multiplication);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -778,9 +778,9 @@ TEST(DMatrix_OperatorTests, T_004_MultiplicationOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::multiplication);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());
@@ -822,9 +822,9 @@ TEST(DMatrix_OperatorTests, T_005_MultiplicationEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::multiplication);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_rows.rows());
@@ -837,9 +837,9 @@ TEST(DMatrix_OperatorTests, T_005_MultiplicationEqualsOperator)
 
 			EXPECT_TRUE(false);
 		}
-		catch (const DMatrix_OperationMatrixMismatch& e)
+		catch (const Matrix_OperationMatrixMismatch& e)
 		{
-			EXPECT_EQ(e.operation(), DMatrix_OperationMatrixMismatch::EOperation::multiplication);
+			EXPECT_EQ(e.operation(), Matrix_OperationMatrixMismatch::EOperation::multiplication);
 			EXPECT_EQ(e.lhs_rows(), matrix.rows());
 			EXPECT_EQ(e.lhs_columns(), matrix.columns());
 			EXPECT_EQ(e.rhs_rows(), matrix_diff_columns.rows());

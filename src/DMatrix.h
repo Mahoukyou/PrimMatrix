@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "DMatrix_exception.h"
+#include "Matrix_Exception.h"
 
 namespace PrimMatrix
 {
@@ -59,7 +59,7 @@ namespace PrimMatrix
 			const size_type size = rows() * columns();
 			if(arr.size() != size)
 			{
-				throw DMatrix_InvalidInitializerSize{ arr.size(), size };
+				throw Matrix_InvalidInitializerSize{ arr.size(), size };
 			}
 
 			data_ = arr;
@@ -72,7 +72,7 @@ namespace PrimMatrix
 			const size_type size = rows() * columns();
 			if (il.size() != size)
 			{
-				throw DMatrix_InvalidInitializerSize{ il.size(), size };
+				throw Matrix_InvalidInitializerSize{ il.size(), size };
 			}
 
 			data_ = std::move(il);
@@ -125,7 +125,7 @@ namespace PrimMatrix
 		{
 			if (index >= size())
 			{
-				throw DMatrix_IndexOutOfBounds{ index, size() };
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -135,7 +135,7 @@ namespace PrimMatrix
 		{
 			if (index >= size())
 			{
-				throw DMatrix_IndexOutOfBounds{ index, size() };
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -146,7 +146,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_RowColOutOfBounds{ row, column, rows(), columns() };
+				throw Matrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
 			return data_[to_index(row, column)];
@@ -157,7 +157,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_RowColOutOfBounds{row, column, rows(), columns()};
+				throw Matrix_RowColOutOfBounds{row, column, rows(), columns()};
 			}
 
 			return data_[to_index(row, column)];
@@ -219,8 +219,8 @@ namespace PrimMatrix
 			if (rows() != rhs.rows() ||
 				columns() != rhs.columns())
 			{
-				throw DMatrix_OperationMatrixMismatch {
-					DMatrix_OperationMatrixMismatch::EOperation::addition,
+				throw Matrix_OperationMatrixMismatch {
+					Matrix_OperationMatrixMismatch::EOperation::addition,
 					rows(),
 					columns(),
 					rhs.rows(),
@@ -242,8 +242,8 @@ namespace PrimMatrix
 			if (rows() != rhs.rows() ||
 				columns() != rhs.columns())
 			{
-				throw DMatrix_OperationMatrixMismatch {
-					DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+				throw Matrix_OperationMatrixMismatch {
+					Matrix_OperationMatrixMismatch::EOperation::subtraction,
 					rows(),
 					columns(),
 					rhs.rows(),
@@ -350,8 +350,8 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch {
-				DMatrix_OperationMatrixMismatch::EOperation::addition,
+			throw Matrix_OperationMatrixMismatch {
+				Matrix_OperationMatrixMismatch::EOperation::addition,
 				lhs.rows(),
 				lhs.columns(),
 				rhs.rows(),
@@ -376,8 +376,8 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch {
-				DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+			throw Matrix_OperationMatrixMismatch {
+				Matrix_OperationMatrixMismatch::EOperation::subtraction,
 				lhs.rows(),
 				lhs.columns(),
 				rhs.rows(),
@@ -403,8 +403,8 @@ namespace PrimMatrix
 
 		if (lhs.columns() != rhs.rows())
 		{
-			throw DMatrix_OperationMatrixMismatch { 
-				DMatrix_OperationMatrixMismatch::EOperation::multiplication, 
+			throw Matrix_OperationMatrixMismatch { 
+				Matrix_OperationMatrixMismatch::EOperation::multiplication, 
 				lhs.rows(), 
 				lhs.columns(), 
 				rhs.rows(), 

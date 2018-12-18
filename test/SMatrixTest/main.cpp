@@ -115,7 +115,30 @@ TEST(DataAccessTest, ByIndex)
 			EXPECT_EQ(const_matrix[index], test_data[index]);
 		}
 
-		// todo exception for at method
+		const size_t index = matrix.size();
+		try
+		{
+			matrix.at(index);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_IndexOutOfBounds& e)
+		{
+			EXPECT_EQ(e.index(), index);
+			EXPECT_EQ(e.matrix_size(), matrix.size());
+		}
+
+		try
+		{
+			const_matrix.at(index);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_IndexOutOfBounds& e)
+		{
+			EXPECT_EQ(e.index(), index);
+			EXPECT_EQ(e.matrix_size(), matrix.size());
+		}
 	}
 }
 
@@ -139,7 +162,65 @@ TEST(DataAccessTest, ByRowAndColumn)
 			}
 		}
 
-		// todo exception for at method
+		const size_t row_out_of_bounds = matrix.rows();
+		const size_t column_out_of_bounds = matrix.columns();
+		const size_t row = 0;
+		const size_t column = 0;
+		try
+		{
+			matrix.at(row_out_of_bounds, column);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_RowColOutOfBounds& e)
+		{
+			EXPECT_EQ(e.rows(), row_out_of_bounds);
+			EXPECT_EQ(e.columns(), column);
+			EXPECT_EQ(e.matrix_rows(), matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), matrix.columns());
+		}
+
+		try
+		{
+			matrix.at(row, column_out_of_bounds);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_RowColOutOfBounds& e)
+		{
+			EXPECT_EQ(e.rows(), row);
+			EXPECT_EQ(e.columns(), column_out_of_bounds);
+			EXPECT_EQ(e.matrix_rows(), matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), matrix.columns());
+		}
+
+		try
+		{
+			const_matrix.at(row_out_of_bounds, column);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_RowColOutOfBounds& e)
+		{
+			EXPECT_EQ(e.rows(), row_out_of_bounds);
+			EXPECT_EQ(e.columns(), column);
+			EXPECT_EQ(e.matrix_rows(), const_matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), const_matrix.columns());
+		}
+
+		try
+		{
+			const_matrix.at(row, column_out_of_bounds);
+
+			EXPECT_FALSE(true);
+		}
+		catch (const Matrix_RowColOutOfBounds& e)
+		{
+			EXPECT_EQ(e.rows(), row);
+			EXPECT_EQ(e.columns(), column_out_of_bounds);
+			EXPECT_EQ(e.matrix_rows(), const_matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), const_matrix.columns());
+		}
 	}
 }
 

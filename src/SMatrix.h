@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include "Matrix_Exception.h"
 
 // todo, use constructors instead of aggregate initialization?
 
@@ -34,8 +35,7 @@ namespace PrimMatrix
 		{
 			if(index >= size())
 			{
-				//todo
-				throw 0;
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -45,8 +45,7 @@ namespace PrimMatrix
 		{
 			if (index >= size())
 			{
-				//todo
-				throw 0;
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -57,8 +56,7 @@ namespace PrimMatrix
 			if (row >= rows() || 
 				column >= columns())
 			{
-				//todo
-				throw 0;
+				throw Matrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
 			return data_[to_index(row, column)];
@@ -69,8 +67,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				//todo
-				throw 0;
+				throw Matrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
 			return data_[to_index(row, column)];
