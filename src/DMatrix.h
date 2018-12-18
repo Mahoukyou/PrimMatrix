@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "DMatrix_exception.h"
+#include "Matrix_Exception.h"
 
 namespace PrimMatrix
 {
@@ -26,8 +26,6 @@ namespace PrimMatrix
 		using const_reference = const T&;
 		using pointer = T*;
 		using const_pointer = const T*;
-		
-		//tmp for now
 		using iterator = typename std::vector<T>::iterator;
 		using const_iterator = typename std::vector<T>::const_iterator;
 
@@ -39,50 +37,50 @@ namespace PrimMatrix
 
 		/* CONSTRUCTION || DESTRUCTION */
 		explicit DMatrix(const size_type row_count, const size_type column_count) :
-			row_count_{ row_count },
-			column_count_{ column_count },
-			data_(row_count_ * column_count_)
+			rows_{ row_count },
+			columns_{ column_count },
+			data_(rows_ * columns_)
 		{ 
 			
 		}
 
 		explicit DMatrix(const size_type row_count, const size_type column_count, const value_type& initial_value) :
-			row_count_{ row_count },
-			column_count_{ column_count }, 
-			data_(row_count_ * column_count_, initial_value)
+			rows_{ row_count },
+			columns_{ column_count }, 
+			data_(rows_ * columns_, initial_value)
 		{
 
 		}
 
 		explicit DMatrix(const size_type row_count, const size_type column_count, const std::vector<value_type>& arr) :
-			row_count_{ row_count },
-			column_count_{ column_count }
+			rows_{ row_count },
+			columns_{ column_count }
 		{
 			const size_type size = rows() * columns();
 			if(arr.size() != size)
 			{
-				throw DMatrix_InvalidInitializerSize{ arr.size(), size };
+				throw Matrix_InvalidInitializerSize{ arr.size(), size };
 			}
 
 			data_ = arr;
 		}
 
 		explicit DMatrix(const size_type row_count, const size_type column_count, std::initializer_list<value_type> il) : 
-			row_count_{ row_count },
-			column_count_{ column_count }
+			rows_{ row_count },
+			columns_{ column_count }
 		{
 			const size_type size = rows() * columns();
 			if (il.size() != size)
 			{
-				throw DMatrix_InvalidInitializerSize{ il.size(), size };
+				throw Matrix_InvalidInitializerSize{ il.size(), size };
 			}
 
 			data_ = std::move(il);
 		}
 
 		explicit DMatrix(const std::vector<value_type>& arr, const EOrientation orientation) :
-			row_count_{ orientation == EOrientation::vertical ? arr.size() : 1 },
-			column_count_{ orientation == EOrientation::horizontal ? arr.size() : 1 },
+			rows_{ orientation == EOrientation::vertical ? arr.size() : 1 },
+			columns_{ orientation == EOrientation::horizontal ? arr.size() : 1 },
 			data_{ arr }
 		{
 		}
@@ -91,11 +89,11 @@ namespace PrimMatrix
 
 		DMatrix(const DMatrix&) = default;
 		DMatrix(DMatrix&& rhs) noexcept :
-			row_count_{ rhs.row_count_ },
-			column_count_{ rhs.column_count_ },
+			rows_{ rhs.rows_ },
+			columns_{ rhs.columns_ },
 			data_{ std::move(rhs.data_) }
 		{
-			rhs.row_count_ = rhs.column_count_ = 0;
+			rhs.rows_ = rhs.columns_ = 0;
 		}
 
 		/* COPY / MOVE OPERATIONS */
@@ -110,14 +108,14 @@ namespace PrimMatrix
 		{
 			using std::swap;
 
-			swap(lhs.row_count_, rhs.row_count_);
-			swap(lhs.column_count_, rhs.column_count_);
+			swap(lhs.rows_, rhs.rows_);
+			swap(lhs.columns_, rhs.columns_);
 			swap(lhs.data_, rhs.data_);
 		}
 
 		/* ACCESSORS */
-		size_type rows() const noexcept { return row_count_; }
-		size_type columns() const noexcept { return column_count_; }
+		size_type rows() const noexcept { return rows_; }
+		size_type columns() const noexcept { return columns_; }
 		size_type size() const noexcept { return data_.size(); }
 
 		pointer data() noexcept { return data_.data(); }
@@ -127,7 +125,7 @@ namespace PrimMatrix
 		{
 			if (index >= size())
 			{
-				throw DMatrix_IndexOutOfBounds{ index, size() };
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -137,7 +135,7 @@ namespace PrimMatrix
 		{
 			if (index >= size())
 			{
-				throw DMatrix_IndexOutOfBounds{ index, size() };
+				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
 
 			return data_[index];
@@ -148,7 +146,7 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_RowColOutOfBounds{ row, column, rows(), columns() };
+				throw Matrix_RowColOutOfBounds{ row, column, rows(), columns() };
 			}
 
 			return data_[to_index(row, column)];
@@ -159,20 +157,41 @@ namespace PrimMatrix
 			if (row >= rows() ||
 				column >= columns())
 			{
-				throw DMatrix_RowColOutOfBounds{row, column, rows(), columns()};
+				throw Matrix_RowColOutOfBounds{row, column, rows(), columns()};
 			}
 
 			return data_[to_index(row, column)];
 		}
 
-		/* tmp ITERATORS -- vector ones for now */
-		iterator begin() { return data_.begin(); }
-		const_iterator begin() const { return data_.begin(); }
-		iterator end() { return data_.end(); }
-		const_iterator end() const { return data_.end(); }
+		iterator begin() noexcept
+		{
+			return data_.begin();
+		}
 
-		const_iterator cbegin() const { return data_.cbegin(); }
-		const_iterator cend() const { return data_.cend(); }
+		const_iterator begin() const noexcept
+		{
+			return cbegin();
+		}
+
+		iterator end() noexcept
+		{
+			return data_.end();
+		}
+
+		const_iterator end() const noexcept
+		{
+			return cend();
+		}
+
+		const_iterator cbegin() const noexcept
+		{
+			return data_.cbegin();
+		}
+
+		const_iterator cend() const noexcept
+		{
+			return data_.cend();
+		}
 
 		/* OPERATORS */
 		reference operator[](const size_type index)
@@ -200,8 +219,8 @@ namespace PrimMatrix
 			if (rows() != rhs.rows() ||
 				columns() != rhs.columns())
 			{
-				throw DMatrix_OperationMatrixMismatch {
-					DMatrix_OperationMatrixMismatch::EOperation::addition,
+				throw Matrix_OperationMatrixMismatch {
+					Matrix_OperationMatrixMismatch::EOperation::addition,
 					rows(),
 					columns(),
 					rhs.rows(),
@@ -223,8 +242,8 @@ namespace PrimMatrix
 			if (rows() != rhs.rows() ||
 				columns() != rhs.columns())
 			{
-				throw DMatrix_OperationMatrixMismatch {
-					DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+				throw Matrix_OperationMatrixMismatch {
+					Matrix_OperationMatrixMismatch::EOperation::subtraction,
 					rows(),
 					columns(),
 					rhs.rows(),
@@ -261,7 +280,7 @@ namespace PrimMatrix
 		/* OPERATIONS */
 		DMatrix transpose() const
 		{
-			DMatrix result_matrix{ column_count_, row_count_ };
+			DMatrix result_matrix{ columns_, rows_ };
 
 			auto current_matrix_iterator = data_.begin();
 			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
@@ -288,12 +307,12 @@ namespace PrimMatrix
 		}
 
 	private:
-		size_type to_index(const size_type row, const size_type column) const
+		size_type to_index(const size_type row, const size_type column) const noexcept
 		{
-			return row * column_count_ + column;
+			return row * columns() + column;
 		}
 
-		size_type row_count_, column_count_;
+		size_type rows_, columns_;
 		std::vector<value_type> data_;
 
 	};
@@ -331,8 +350,8 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch {
-				DMatrix_OperationMatrixMismatch::EOperation::addition,
+			throw Matrix_OperationMatrixMismatch {
+				Matrix_OperationMatrixMismatch::EOperation::addition,
 				lhs.rows(),
 				lhs.columns(),
 				rhs.rows(),
@@ -357,8 +376,8 @@ namespace PrimMatrix
 		if (lhs.rows() != rhs.rows() ||
 			lhs.columns() != rhs.columns())
 		{
-			throw DMatrix_OperationMatrixMismatch {
-				DMatrix_OperationMatrixMismatch::EOperation::subtraction,
+			throw Matrix_OperationMatrixMismatch {
+				Matrix_OperationMatrixMismatch::EOperation::subtraction,
 				lhs.rows(),
 				lhs.columns(),
 				rhs.rows(),
@@ -384,8 +403,8 @@ namespace PrimMatrix
 
 		if (lhs.columns() != rhs.rows())
 		{
-			throw DMatrix_OperationMatrixMismatch { 
-				DMatrix_OperationMatrixMismatch::EOperation::multiplication, 
+			throw Matrix_OperationMatrixMismatch { 
+				Matrix_OperationMatrixMismatch::EOperation::multiplication, 
 				lhs.rows(), 
 				lhs.columns(), 
 				rhs.rows(), 

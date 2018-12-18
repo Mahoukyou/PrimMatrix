@@ -9,7 +9,7 @@ add_executable(dynamic_matrix_test ${SRCS})
 
 target_link_libraries(
 	dynamic_matrix_test
-    prim_matrix
+	prim_matrix
 	gtest
 	gmock_main
 )
