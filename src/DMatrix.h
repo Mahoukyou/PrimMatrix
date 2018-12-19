@@ -306,6 +306,27 @@ namespace PrimMatrix
 			return identity_matrix;
 		}
 
+		DMatrix splice(const Splice& splice) const
+		{
+
+			if (splice.row_begin + splice.row_count > rows() ||
+				splice.column_begin + splice.column_count > columns())
+			{
+				throw Matrix_SpliceOutOfBounds{ splice, rows(), columns() };
+			}
+
+			DMatrix<value_type> result_matrix{splice.row_count, splice.column_count};
+			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
+			{
+				for (size_type result_row = 0; result_row < result_matrix.rows(); ++result_row)
+				{
+					result_matrix(result_row, result_column) = data_[to_index(splice.row_begin + result_row, splice.column_begin + result_column)];
+				}
+			}
+
+			return result_matrix;
+		}
+
 	private:
 		size_type to_index(const size_type row, const size_type column) const noexcept
 		{

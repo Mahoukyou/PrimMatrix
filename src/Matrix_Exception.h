@@ -4,6 +4,23 @@
 
 namespace PrimMatrix
 {
+	// Leaving it here for simplicity
+	struct Splice
+	{
+		size_t row_begin;
+		size_t column_begin;
+		size_t row_count;
+		size_t column_count;
+	};
+
+	inline bool operator==(const Splice& lhs, const Splice& rhs)
+	{
+		return lhs.row_begin == rhs.row_begin &&
+			lhs.column_begin == rhs.column_begin &&
+			lhs.row_count == rhs.row_count &&
+			lhs.column_count == rhs.column_count;
+	}
+
 	class Matrix_Exception : public std::runtime_error
 	{
 	public:
@@ -97,9 +114,29 @@ namespace PrimMatrix
 		size_t rhs_rows() const noexcept { return rhs_rows_; }
 		size_t rhs_columns() const noexcept { return rhs_columns_; }
 
-
 	private:
 		const EOperation operation_;
 		const size_t lhs_rows_, lhs_columns_, rhs_rows_, rhs_columns_;
+	};
+
+	class Matrix_SpliceOutOfBounds : public Matrix_Exception
+	{
+	public:
+		explicit Matrix_SpliceOutOfBounds(const Splice& splice, const size_t matrix_rows, const size_t matrix_columns) :
+			Matrix_Exception{ "Splice is out of bounds" },
+			splice_{ splice },
+			matrix_rows_{ matrix_rows },
+			matrix_columns_{ matrix_columns }
+		{
+
+		}
+
+		const Splice& splice() const noexcept { return splice_; }
+		size_t matrix_rows() const noexcept { return matrix_rows_; }
+		size_t matrix_columns() const noexcept { return matrix_columns_; }
+
+	private:
+		const Splice splice_;
+		const size_t matrix_rows_, matrix_columns_;
 	};
 }

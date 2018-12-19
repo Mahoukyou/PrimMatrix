@@ -979,3 +979,45 @@ TEST(DMatrix_Operations, T_002_CreateIdentityMatrix)
 		EXPECT_THAT(identity_matrix, ::testing::ElementsAre(1));
 	}
 }
+
+TEST(DMatrix_Operations, T_003_Splice)
+{
+	using namespace PrimMatrix;
+
+	{
+		using test_type = int;
+		const DMatrix<test_type> matrix{ 3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12} };
+		
+		const auto spliced = matrix.splice({ 1, 2, 2, 2 });
+
+		EXPECT_THAT(spliced, ::testing::ElementsAre(7, 8, 11, 12));
+
+		const Splice splice_row_out_of_bounds{ 1, 2, 3, 2 };
+		const Splice splice_column_out_of_bounds{ 1, 2, 2, 3 };
+		try
+		{
+			matrix.splice(splice_row_out_of_bounds);
+
+			EXPECT_TRUE(false);
+		}
+		catch(const Matrix_SpliceOutOfBounds& e)
+		{
+			EXPECT_EQ(e.splice(), splice_row_out_of_bounds);
+			EXPECT_EQ(e.matrix_rows(), matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), matrix.columns());
+		}
+
+		try
+		{
+			matrix.splice(splice_column_out_of_bounds);
+
+			EXPECT_TRUE(false);
+		}
+		catch (const Matrix_SpliceOutOfBounds& e)
+		{
+			EXPECT_EQ(e.splice(), splice_column_out_of_bounds);
+			EXPECT_EQ(e.matrix_rows(), matrix.rows());
+			EXPECT_EQ(e.matrix_columns(), matrix.columns());
+		}
+	}
+}
