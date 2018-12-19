@@ -317,3 +317,24 @@ TEST(OperatorTest, MultiplicationByScalarOperator)
 		EXPECT_THAT(multiplication_result, ::testing::ElementsAreArray({ 4, 8, 12, 16, 20, 24 }));
 	}
 }
+
+TEST(OperationsTests, Transpose)
+{
+	{
+		constexpr SMatrix<int, 2, 5> matrix{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		
+		constexpr SMatrix<int, 5, 2> transposed = matrix.transpose();
+
+		EXPECT_THAT(transposed, ::testing::ElementsAre(1, 6, 2, 7, 3, 8, 4, 9, 5, 10));
+	}
+}
+
+TEST(OperationsTests, Splice)
+{
+	{
+		constexpr SMatrix<int, 3, 4> matrix{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+		constexpr SMatrix<int, 2, 2> spliced = matrix.splice<1, 2, 2, 2>();
+
+		EXPECT_THAT(spliced, ::testing::ElementsAre(7, 8, 11, 12));
+	}
+}

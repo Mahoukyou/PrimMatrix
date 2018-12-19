@@ -3,8 +3,6 @@
 #include <array>
 #include "Matrix_Exception.h"
 
-// todo, use constructors instead of aggregate initialization?
-
 namespace PrimMatrix
 {
 	template <class T, size_t rows_, size_t columns_>
@@ -33,7 +31,7 @@ namespace PrimMatrix
 
 		constexpr reference at(const size_type index)
 		{
-			if(index >= size())
+			if (index >= size())
 			{
 				throw Matrix_IndexOutOfBounds{ index, size() };
 			}
@@ -53,7 +51,7 @@ namespace PrimMatrix
 
 		constexpr reference at(const size_type row, const size_type column)
 		{
-			if (row >= rows() || 
+			if (row >= rows() ||
 				column >= columns())
 			{
 				throw Matrix_RowColOutOfBounds{ row, column, rows(), columns() };
@@ -113,7 +111,7 @@ namespace PrimMatrix
 			return std::cend(data_);
 		}
 
-		iterator cbegin() noexcept
+		constexpr const_iterator cbegin() const noexcept
 		{
 			return std::cbegin(data_);
 		}
@@ -126,7 +124,7 @@ namespace PrimMatrix
 		SMatrix& operator+=(const SMatrix& rhs)
 		{
 			auto rhs_it = rhs.begin();
-			for(auto& el : *this)
+			for (auto& el : *this)
 			{
 				el += *rhs_it++;
 			}
@@ -158,14 +156,33 @@ namespace PrimMatrix
 		/* OPERATIONS */
 		constexpr SMatrix<value_type, columns_, rows_> transpose() const
 		{
-			SMatrix<value_type, columns_, rows_> result_matrix;
+			SMatrix<value_type, columns_, rows_> result_matrix{};
 
 			auto current_matrix_iterator = cbegin();
-			for(size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
+			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
 			{
-				for(size_type result_row = 0; result_row < result_matrix.rows(); ++result_row, ++current_matrix_iterator)
+				for (size_type result_row = 0; result_row < result_matrix.rows(); ++result_row, ++current_matrix_iterator)
 				{
 					result_matrix(result_row, result_column) = *current_matrix_iterator;
+				}
+			}
+
+			return result_matrix;
+		}
+
+		template <size_t row_begin_, size_t column_begin_, size_t row_count_, size_t column_count_>
+		constexpr SMatrix<value_type, row_count_, column_count_> splice() const
+		{
+			static_assert(row_begin_ + row_count_ <= rows_, "Row slice out of range");
+			static_assert(column_begin_ + column_count_ <= columns_, "Column slice out of range");
+
+			SMatrix<value_type, row_count_, column_count_> result_matrix{};
+
+			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
+			{
+				for (size_type result_row = 0; result_row < result_matrix.rows(); ++result_row)
+				{
+					result_matrix(result_row, result_column) = data_[to_index(result_row + row_begin_, result_column + column_begin_)];
 				}
 			}
 
@@ -187,7 +204,7 @@ namespace PrimMatrix
 		const SMatrix<T, rows_, columns_>& rhs)
 	{
 		SMatrix<T, rows_, columns_> result_matrix{};
-		for(size_t i = 0; i < result_matrix.size(); ++i)
+		for (size_t i = 0; i < result_matrix.size(); ++i)
 		{
 			result_matrix[i] = lhs[i] + rhs[i];
 		}
@@ -237,7 +254,7 @@ namespace PrimMatrix
 	{
 		SMatrix<T, rows_, columns_> result_matrix{};
 
-		for(size_t i = 0; i < lhs.size(); ++i)
+		for (size_t i = 0; i < lhs.size(); ++i)
 		{
 			result_matrix[i] = lhs[i] * rhs;
 		}
