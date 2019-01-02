@@ -14,8 +14,9 @@ target_link_libraries(
 	gmock_main
 )
 
-target_link_libraries(dynamic_matrix_test --coverage)
-
+if(ENABLE_COVERAGE)
+	target_link_libraries(dynamic_matrix_test --coverage)
+endif()
 
 install(TARGETS dynamic_matrix_test DESTINATION bin)
 add_test(UnitTests dynamic_matrix_test)
