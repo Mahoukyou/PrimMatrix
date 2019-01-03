@@ -11,6 +11,6 @@ set(
 )
 add_library(prim_matrix STATIC ${prim_matrix_srcs}) 
 set_target_properties(prim_matrix PROPERTIES LINKER_LANGUAGE CXX) 
-target_link_libraries(prim_matrix --coverage)
+target_link_libraries(prim_matrix)
  
 target_include_directories(prim_matrix PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

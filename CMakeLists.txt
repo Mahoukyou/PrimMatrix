@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.2)
 
 project (primmatrix)
 
+option(ENABLE_TESTS "Enable tests" TRUE)
+
 #Coverage
 if(CMAKE_COMPILER_IS_GNUCC)
 	option(ENABLE_COVERAGE "Enable coverage" FALSE)
@@ -11,10 +13,10 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	endif()
 endif()
 
-
-enable_testing()
-
 include_directories(".")
-
 add_subdirectory(src)
-add_subdirectory(test)
+
+if(ENABLE_TESTS)
+	enable_testing()
+	add_subdirectory(test)
+endif()

@@ -5,10 +5,10 @@
 
 namespace PrimMatrix
 {
-	template <class T, size_t rows_, size_t columns_>
+	template <class T, size_t Rows, size_t Columns>
 	class SMatrix
 	{
-		static_assert(rows_ * columns_ != 0, "Empty matrices are not supported at the moment");
+		static_assert(Rows * Columns != 0, "Empty matrices are not supported at the moment");
 
 	public:
 		using value_type = T;
@@ -22,8 +22,8 @@ namespace PrimMatrix
 		using iterator = pointer;
 		using const_iterator = const_pointer;
 
-		constexpr size_type rows() const noexcept { return rows_; };
-		constexpr size_type columns() const noexcept { return columns_; };
+		constexpr size_type rows() const noexcept { return Rows; };
+		constexpr size_type columns() const noexcept { return Columns; };
 		constexpr size_type size() const noexcept { return rows() * columns(); };
 
 		pointer data() noexcept { return data_; }
@@ -154,9 +154,9 @@ namespace PrimMatrix
 		}
 
 		/* OPERATIONS */
-		constexpr SMatrix<value_type, columns_, rows_> transpose() const
+		constexpr SMatrix<value_type, Columns, Rows> transpose() const
 		{
-			SMatrix<value_type, columns_, rows_> result_matrix{};
+			SMatrix<value_type, Columns, Rows> result_matrix{};
 
 			auto current_matrix_iterator = cbegin();
 			for (size_type result_column = 0; result_column < result_matrix.columns(); ++result_column)
@@ -173,8 +173,8 @@ namespace PrimMatrix
 		template <size_t row_begin_, size_t column_begin_, size_t row_count_, size_t column_count_>
 		constexpr SMatrix<value_type, row_count_, column_count_> splice() const
 		{
-			static_assert(row_begin_ + row_count_ <= rows_, "Row slice out of range");
-			static_assert(column_begin_ + column_count_ <= columns_, "Column slice out of range");
+			static_assert(row_begin_ + row_count_ <= Rows, "Row slice out of range");
+			static_assert(column_begin_ + column_count_ <= Columns, "Column slice out of range");
 
 			SMatrix<value_type, row_count_, column_count_> result_matrix{};
 
@@ -189,7 +189,7 @@ namespace PrimMatrix
 			return result_matrix;
 		}
 
-		value_type data_[rows_ * columns_];
+		value_type data_[Rows * Columns];
 
 	private:
 		constexpr size_type to_index(const size_type row, const size_type column) const noexcept
@@ -198,12 +198,12 @@ namespace PrimMatrix
 		}
 	};
 
-	template <class T, size_t rows_, size_t columns_>
-	constexpr SMatrix<T, rows_, columns_> operator+(
-		const SMatrix<T, rows_, columns_>& lhs,
-		const SMatrix<T, rows_, columns_>& rhs)
+	template <class T, size_t Rows, size_t Columns>
+	constexpr SMatrix<T, Rows, Columns> operator+(
+		const SMatrix<T, Rows, Columns>& lhs,
+		const SMatrix<T, Rows, Columns>& rhs)
 	{
-		SMatrix<T, rows_, columns_> result_matrix{};
+		SMatrix<T, Rows, Columns> result_matrix{};
 		for (size_t i = 0; i < result_matrix.size(); ++i)
 		{
 			result_matrix[i] = lhs[i] + rhs[i];
@@ -212,12 +212,12 @@ namespace PrimMatrix
 		return result_matrix;
 	}
 
-	template <class T, size_t rows_, size_t columns_>
-	constexpr SMatrix<T, rows_, columns_> operator-(
-		const SMatrix<T, rows_, columns_>& lhs,
-		const SMatrix<T, rows_, columns_>& rhs)
+	template <class T, size_t Rows, size_t Columns>
+	constexpr SMatrix<T, Rows, Columns> operator-(
+		const SMatrix<T, Rows, Columns>& lhs,
+		const SMatrix<T, Rows, Columns>& rhs)
 	{
-		SMatrix<T, rows_, columns_> result_matrix{};
+		SMatrix<T, Rows, Columns> result_matrix{};
 		for (size_t i = 0; i < result_matrix.size(); ++i)
 		{
 			result_matrix[i] = lhs[i] - rhs[i];
@@ -226,12 +226,12 @@ namespace PrimMatrix
 		return result_matrix;
 	}
 
-	template <class T, size_t lhs_rows_, size_t common_, size_t rhs_columns_>
-	constexpr SMatrix<T, lhs_rows_, rhs_columns_> operator*(
-		const SMatrix<T, lhs_rows_, common_>& lhs,
-		const SMatrix<T, common_, rhs_columns_>& rhs)
+	template <class T, size_t lhs_Rows, size_t common_, size_t rhs_Columns>
+	constexpr SMatrix<T, lhs_Rows, rhs_Columns> operator*(
+		const SMatrix<T, lhs_Rows, common_>& lhs,
+		const SMatrix<T, common_, rhs_Columns>& rhs)
 	{
-		SMatrix<T, lhs_rows_, rhs_columns_> result_matrix{};
+		SMatrix<T, lhs_Rows, rhs_Columns> result_matrix{};
 
 		constexpr auto sum_len = common_;
 		for (size_t result_row = 0; result_row < result_matrix.rows(); ++result_row)
@@ -247,12 +247,12 @@ namespace PrimMatrix
 		return result_matrix;
 	}
 
-	template <class T, size_t rows_, size_t columns_>
-	constexpr SMatrix<T, rows_, columns_> operator*(
-		const SMatrix<T, rows_, columns_>& lhs,
+	template <class T, size_t Rows, size_t Columns>
+	constexpr SMatrix<T, Rows, Columns> operator*(
+		const SMatrix<T, Rows, Columns>& lhs,
 		const T& rhs)
 	{
-		SMatrix<T, rows_, columns_> result_matrix{};
+		SMatrix<T, Rows, Columns> result_matrix{};
 
 		for (size_t i = 0; i < lhs.size(); ++i)
 		{
